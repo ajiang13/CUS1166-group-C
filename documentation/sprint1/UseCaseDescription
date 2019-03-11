@@ -1,0 +1,3 @@
+UC.1: Enter a Search (Query)
+Actors: User, System
+Description: The user types in keywords to search in the UI, system displays results from the database in a UI view.
