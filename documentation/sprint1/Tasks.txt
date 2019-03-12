@@ -2,5 +2,5 @@ Use-case description - Alan
 System-sequence diagram - Alan
 Domain-class diagram - Alan
 
-Java code (JDBC bridge, UI) - Matt, Raeven
-Database (MySQL) - Alan, John
+Python code (Pymongo, Flask) - Matt, Raeven
+Database (MongoDB) - Alan, John
