@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Search results</title>
+  <head>
+  <body>
+    <h1>Results for {{query}}</h1>
+    <i>{{result_count}} result(s).</i>
+    <table>
+    <th><strong>Name</strong></th>
+    <th><strong>Address</strong></th>
+    <th><strong>City</strong></th>
+    <th><strong>State</strong></th>
+    <th><strong>Zip Code</strong></th>
+    <th><strong>Stars</strong></th>
+    <th><strong>Review Count</strong></th>
+    <th><strong>Categories</strong></th>
+
+      {% for business in results %}
+      <tr>
+      <td>{{business.business.name}}</td>
+      <td>{{business.business.address}}</td>
+      <td>{{business.business.city}}</td>
+      <td>{{business.business.state}}</td>
+      <td>{{business.business.postal_code}}</td>
+      <td>{{business.business.stars}}</td>
+      <td>{{business.business.review_count}}</td>
+      <td>{{business.business.categories}}</td>
+      </tr>
+      {% endfor %}
+      </table>
+  </body>
+</html>
