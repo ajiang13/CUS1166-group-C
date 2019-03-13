@@ -1,13 +1,24 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Search</title>
-  <head>
-  <body>
+{% extends 'layout.html' %}
+{% block title %}Search{% endblock %}
+{% block body %}
     <h1>Search</h1>
-    <form action="{{url_for('search_results')}}" method='post'>
-      <input type='text' name='name' placeholder='Enter keyword(s)'>
-      <button type='Submit'>Search</button>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class=flashes>
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    {% from '_formhelpers.html' import render_field %}
+    <form method='post'>
+      <dl>
+        {{ render_field(form.select) }}
+        <p>
+        {{ render_field(form.search) }}
+      </dl>
+      <p><input type=submit value=Search>
     </form>
-  </body>
-</html>
+{% endblock %}

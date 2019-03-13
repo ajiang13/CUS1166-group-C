@@ -1,9 +1,6 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Search results</title>
-  <head>
-  <body>
+{% extends 'layout.html' %}
+{% block title %}Search results{% endblock %}
+{% block body %}
     <h1>Results for {{query}}</h1>
     <i>{{result_count}} result(s).</i>
     <table>
@@ -29,5 +26,4 @@
       </tr>
       {% endfor %}
       </table>
-  </body>
-</html>
+{% endblock %}
