@@ -35,16 +35,5 @@ def search_results(search):
     else:
         return render_template('search_results.html', search=search, results=results, result_count=result_count, search_string=search_string)
 
-#login
-@app.route("/login")
-def login():
-    error = None
-    if request .method == 'POST':
-        if.request.form['username'] != 'admin'
-        or request.form['password'] != 'admin':
-    error = 'Invalid Credentials. Please Try Again.'
-else:
-    return render_template('login.html', error=error)
-
 if __name__ == "__main__":
     app.run(debug=True, host='127.0.0.1', port=5110)
