@@ -1,5 +1,11 @@
-Use cases:
-Alan -
-John -
-Matt -
-Raeven -
+Alan - advanced search.
+Search using multiple criteria such as name, address, categories, rating. User enters search terms into desired fields to search on.
+
+John - filter.
+Filter search results based on certain criteria to narrow results.
+
+Matt - display all info for restaurant.
+User clicks link (after searching or viewing a list) to view individual page with all restaurant info with clean styling.
+
+Raeven - user accounts.
+Allow users to create accounts and maintain data (users, user data like lists). Log-in with password authentication.
