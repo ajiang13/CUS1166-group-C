@@ -35,6 +35,5 @@ def search_results(search):
     else:
         return render_template('search_results.html', search=search, results=results, result_count=result_count, search_string=search_string)
 
-
 if __name__ == "__main__":
     app.run(debug=True, host='127.0.0.1', port=5110)
