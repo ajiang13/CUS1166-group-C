@@ -33,7 +33,7 @@ def search_results(search):
         flash('No results found')
         return redirect('/search')
     else:
-        return render_template('search_results2.html', search=search, results=results, result_count=result_count, search_string=search_string)
+        return render_template('search_results.html', search=search, results=results, result_count=result_count, search_string=search_string)
 
 
 if __name__ == "__main__":
