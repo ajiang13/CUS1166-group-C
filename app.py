@@ -1,7 +1,8 @@
 #Imports
 from flask import Flask, render_template, url_for, request, redirect, flash
 import json
-from backend import db
+import db
+from tables import Results
 from forms import SearchForm
 
 # Create an instance of Flask class
@@ -25,14 +26,14 @@ def search():
 def search_results(search):
     results = []
     search_string = search.data['search']
-    if search.data['search'] == '':
-        qry = db.search_business_name('search_string')
-        results = qry.all()
+    if search.data['search'] != '':
+        results = db.search_business_name(search_string)
+        result_count = db.search_business_count(search_string)
     if not results:
         flash('No results found')
         return redirect('/search')
     else:
-        return render_template('search_results.html', results=results)
+        return render_template('search_results2.html', search=search, results=results, result_count=result_count, search_string=search_string)
 
 
 if __name__ == "__main__":

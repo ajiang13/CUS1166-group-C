@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 {% block title %}Search results{% endblock %}
 {% block body %}
-    <h1>Results for {{query}}</h1>
+    <h1>Results for '{{search_string}}'</h1>
     <i>{{result_count}} result(s).</i>
     <table>
     <th><strong>Name</strong></th>
@@ -13,16 +13,16 @@
     <th><strong>Review Count</strong></th>
     <th><strong>Categories</strong></th>
 
-      {% for business in results %}
+      {% for document in results %}
       <tr>
-      <td>{{business.business.name}}</td>
-      <td>{{business.business.address}}</td>
-      <td>{{business.business.city}}</td>
-      <td>{{business.business.state}}</td>
-      <td>{{business.business.postal_code}}</td>
-      <td>{{business.business.stars}}</td>
-      <td>{{business.business.review_count}}</td>
-      <td>{{business.business.categories}}</td>
+      <td>{{document.name}}</td>
+      <td>{{document.address}}</td>
+      <td>{{document.city}}</td>
+      <td>{{document.state}}</td>
+      <td>{{document.postal_code}}</td>
+      <td>{{document.stars}}</td>
+      <td>{{document.review_count}}</td>
+      <td>{{document.categories}}</td>
       </tr>
       {% endfor %}
       </table>
