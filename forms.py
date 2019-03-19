@@ -14,5 +14,5 @@ class SearchForm(Form):
     #confirm = PasswordField('Repeat Password')
 
 class FilterForm(Form):
-    choices = [('Name', 'Name'), ('ID', 'ID'), ('City', 'City'), ('Stars', 'Stars'), ('Categories', 'Categories')]
+    choices = [('Name', 'Name'), ('City', 'City'), ('State', 'State'), ('Stars', 'Stars'), ('Reviews', 'Reviews')]
     select = SelectField('Filter by: ', choices = choices)
