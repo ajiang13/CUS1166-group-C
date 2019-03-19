@@ -13,6 +13,6 @@ class SearchForm(Form):
     #])
     #confirm = PasswordField('Repeat Password')
 
-class FilterForm(Form):
+class SortForm(Form):
     choices = [('Name', 'Name'), ('City', 'City'), ('State', 'State'), ('Stars', 'Stars'), ('Reviews', 'Reviews')]
-    select = SelectField('Filter by: ', choices = choices)
+    select = SelectField('Sort by: ', choices = choices)

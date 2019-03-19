@@ -3,7 +3,7 @@ from flask import Flask, render_template, url_for, request, redirect, flash
 import json
 import db
 from tables import Results
-from forms import SearchForm
+from forms import SearchForm, SortForm
 
 # Create an instance of Flask class
 app = Flask(__name__, template_folder='templates')
@@ -18,9 +18,10 @@ def index():
 @app.route("/search", methods=['GET', 'POST'])
 def search():
     search = SearchForm(request.form)
+    sort = SortForm(request.form)
     if request.method == 'POST':
         return search_results(search)
-    return render_template('search.html', form=search)
+    return render_template('search.html', form=search,form2=sort)
 
 @app.route("/search_results", methods=['GET', 'POST'])
 def search_results(search):

@@ -48,3 +48,6 @@ def sort_by_review_count(results,reverse):
         return results.sort('review_count')
     else:
         return results.sort('review_count', -1)
+
+def sort(sortrequest):
+    if (sortrequest == '')
