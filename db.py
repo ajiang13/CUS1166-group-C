@@ -49,3 +49,11 @@ def search_categories(search):
 def search_categories_count(search):
     result_count = db.business.find({'categories': {'$regex': search, '$options': 'i'}}).count()
     return result_count
+
+def advanced_search(search):
+    results = db.business.find(search)
+    return results
+
+def advanced_search_count(search):
+    result_count = db.business.find(search)
+    return result_count
