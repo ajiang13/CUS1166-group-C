@@ -21,6 +21,7 @@ def index():
 def search():
     search = SearchForm(request.form)
     session['search'] = search.data['search']
+    search_string = session['search']
     if request.method == 'POST':
         return search_results()
     return render_template('search.html', form=search)
@@ -30,26 +31,34 @@ def search_results():
     results = []
     search_string = session['search']
     filter = FilterForm(request.form)
-    sortby = filter.data['select']
 
-    #Determining if data is to be sorted and sorting if so
-    if search_string != '':
+    if search_string != '' and not request.action['search_results_filtered']:
         results = db.search_business_name(search_string)
         result_count = db.search_business_count(search_string)
-    elif request.form == filter.button_ascending.data:
-        results = db.search_business_name(search_string)
-        results = db.sort_request(sortby, results, False)
-        result_count = db.search_business_count(search_string)
-    else:
-        results = db.search_business_name(search_string)
-        results = db.sort_request(sortby, results, True)
-        result_count = db.search_business_count(search_string)
-
     if not results:
         flash('No results found')
         return redirect('/search')
     else:
         return render_template('search_results.html', search=search, results=results, result_count=result_count, search_string=search_string, form2 = filter)
+
+@app.route("/search_results_filtered", methods=['GET', 'POST'])
+def search_results_filtered():
+    search_string = session['search']
+    results = db.search_business_name(search_string)
+    filter = FilterForm(request.form)
+    sortby = filter.data['select']
+    ordering = 'Ascending'
+    #ordering = filter.data['selectorder']
+
+    #Determining if data is to be sorted and sorting if so
+    if ordering == 'Ascending':
+        results = db.sort_request(sortby, results, False)
+        result_count = db.search_business_count(search_string)
+        return search_results()
+    else:
+        results = db.sort_request(sortby, results, True)
+        result_count = db.search_business_count(search_string)
+        return search_results()
 
 
 if __name__ == "__main__":

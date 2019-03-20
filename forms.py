@@ -44,6 +44,6 @@ class ButtonField(StringField):
 
 class FilterForm(Form):
     choices = [('Name', 'Name'), ('City', 'City'), ('State', 'State'), ('Stars', 'Stars'), ('Reviews', 'Reviews')]
-    button_ascending = ButtonField('Sort - Ascending')
-    button_descending = ButtonField('Sort - Descending')
     select = SelectField('Sort by: ', choices = choices)
+    #order = [('Ascending', 'Ascending'), ('Descending', 'Descending')]
+    #selectorder = SelectField('Ascending or Descending: ', order = order)
