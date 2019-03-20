@@ -49,16 +49,16 @@ def sort_by_review_count(results,reverse):
     else:
         return results.sort('review_count', -1)
 
-def sort_request(sortrequest,reverse):
-    if (sortrequest == 'Name'):
-        return sort_by_name(sortrequest,reverse)
-    elif (sortrequest == 'City'):
-        return sort_by_city(sortrequest,reverse)
-    elif (sortrequest == 'State'):
-        return sort_by_state(sortrequest,reverse)
-    elif (sortrequest == 'Stars'):
-        return sort_by_stars(sortrequest,reverse)
-    elif (sortrequest == 'Reviews'):
-        return sort_by_review_count(sortrequest,reverse)
+def sort_request(request,results,reverse):
+    if (request == 'Name'):
+        return sort_by_name(results,reverse)
+    elif (request == 'City'):
+        return sort_by_city(results,reverse)
+    elif (request == 'State'):
+        return sort_by_state(results,reverse)
+    elif (request == 'Stars'):
+        return sort_by_stars(results,reverse)
+    elif (request == 'Reviews'):
+        return sort_by_review_count(results,reverse)
     else:
         return None

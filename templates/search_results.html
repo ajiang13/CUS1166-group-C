@@ -4,14 +4,21 @@
     <h1>Results for '{{search_string}}'</h1>
     {% from '_formhelpers.html' import render_field %}
 
-    <form method = 'post'>
+    <form method = 'post' action = '/search_results'>
       <dl>
         {{render_field(form2.select)}}
+        {{render_field(form2.button_ascending)}}
+        {{render_field(form2.button_descending)}}
       </dl>
-      <input type=submit value= 'Sort - Ascending'>
-      <input type=submit value= 'Sort - Descending'>
     </form
-    
+
+    <form method = 'post' action = '/search_results'>
+      <dl>
+        {{render_field(form2.select)}}
+        <p><input type = 'submit' value = "Sort - Ascending"
+      </dl>
+    </form
+
     <i>{{result_count}} result(s).</i>
     <table>
     <th><strong>Name</strong></th>
