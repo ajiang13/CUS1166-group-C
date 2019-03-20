@@ -1,9 +1,10 @@
-from wtforms import Form, StringField, SelectField
+from wtforms import Form, StringField, SelectField, TextField, FloatField, PasswordField, validators
 
 class SearchForm(Form):
-    choices = [('Name', 'Name'), ('ID', 'ID'), ('City', 'City'), ('Stars', 'Stars'), ('Categories', 'Categories')]
+    choices = [('Name', 'Name'), ('City', 'City'), ('State', 'State'), ('Categories', 'Categories')]
     select = SelectField('Search for restaurants:', choices=choices)
     search = StringField('')
+    stars = FloatField('Search by rating e.g. 4.5 (and above):')
 
 class RegistrationForm(Form):
     username = TextField('Username', [validators.Length(min=4, max=20)])
