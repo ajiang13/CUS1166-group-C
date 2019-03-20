@@ -41,8 +41,9 @@ def login():
     if request.method == 'POST':
         if request.form['username'] != 'admin' or request.form['password'] != 'admin':
             error = 'Invalid Credentials. Please Try Again.'
-    else:
-        return render_template('login.html', error=error)
+        else:
+            return redirect('/')
+    return render_template('login.html', error=error)
     
 if __name__ == "__main__":
     app.run(debug=True, host='127.0.0.1', port=5110)
