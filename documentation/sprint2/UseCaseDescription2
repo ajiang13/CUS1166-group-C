@@ -1,0 +1,4 @@
+UC.2: Advanced search
+Actors: User, System
+Description: The user enters search terms in multiple fields through the UI (browser view of Flask template), system gets results from the database and displays in a template.
+Examples: search by name and rating (e.g. name contains pizza and rating >= 4). Search by city and categories (e.g. pizza in Montreal).
