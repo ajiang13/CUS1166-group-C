@@ -2,6 +2,16 @@
 {% block title %}Search results{% endblock %}
 {% block body %}
     <h1>Results for '{{search_string}}'</h1>
+    {% from '_formhelpers.html' import render_field %}
+
+    <form method = 'post'>
+      <dl>
+        {{render_field(form2.select)}}
+      </dl>
+      <input type=submit value= 'Sort - Ascending'>
+      <input type=submit value= 'Sort - Descending'>
+    </form
+    
     <i>{{result_count}} result(s).</i>
     <table>
     <th><strong>Name</strong></th>
