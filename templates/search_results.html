@@ -2,12 +2,22 @@
 {% block title %}Search results{% endblock %}
 {% block body %}
     <h1>Results for '{{search_string}}'</h1>
+    {% from '_formhelpers.html' import render_field %}
+
+    <form method = 'post' action = '/search_results_filtered'>
+      <dl>
+        {{render_field(form2.select)}}
+        
+      </dl>
+      <input type = submit value = Sort>
+    </form
+
     <i>{{result_count}} result(s).</i>
     <table>
     <th><strong>Name</strong></th>
     <th><strong>Address</strong></th>
     <th><strong>City</strong></th>
-    <th><strong>State</strong></th>
+    <th><strong>State/Province</strong></th>
     <th><strong>Zip Code</strong></th>
     <th><strong>Stars</strong></th>
     <th><strong>Review Count</strong></th>
