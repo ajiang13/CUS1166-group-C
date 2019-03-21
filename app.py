@@ -19,6 +19,7 @@ def index():
 def search():
     search = SearchForm(request.form)
     advanced_search = AdvancedSearchForm(request.form)
+    #TO-DO - fix issue: submitting advanced search form raises an error due to first form being empty
     if request.method == 'POST':
         if request.form['button'] == 'Search':
             advanced_search = request.form.get('Advanced Search')
