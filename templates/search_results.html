@@ -3,6 +3,14 @@
 {% block body %}
     <h1>Results for '{{search_string}}'</h1>
     <i>{{result_count}} result(s).</i>
+    {% from '_formhelpers.html' import render_field %}
+    <form value='filter' method='post' action='search_results_filtered'>
+      <d1>
+        {{render_field(filterform.select)}}
+        <br>
+        <p><input type=submit name='sortbutton' value='Sort Ascending'>
+        <input type=submit name='sortbutton' value='Sort Descending'></p>
+      </form>
 
     <table>
     <th><strong>Name</strong></th>
