@@ -140,7 +140,7 @@ def search_results_filtered():
             search_string.append({'stars': {'$gte': q5}},)
         results = db.advanced_search(search_string)
         result_count = db.advanced_search_count(search_string)
-
+    
     if not results:
         flash('No results found')
         return redirect('/search_results')
