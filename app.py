@@ -35,7 +35,7 @@ def search_results(search):
 
     else:
     # display results
-    table = Results(results)
+        table = Results(results)
     table.border = True
     return render_template('results.html', table=table)
 
