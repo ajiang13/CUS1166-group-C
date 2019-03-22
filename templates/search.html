@@ -13,12 +13,29 @@
     {% endwith %}
 
     {% from '_formhelpers.html' import render_field %}
-    <form method='post'>
+    <form name='search' value='search' method='post'>
       <dl>
         {{ render_field(form.select) }}
         <p>
         {{ render_field(form.search) }}
+        <br>
+        {{ render_field(form.stars) }}
       </dl>
-      <p><input type=submit value=Search>
+      <p><input type=submit name='button' value=Search>
     </form>
+    <br>
+    <form name='advanced_search' value='advanced_search' method='post'>
+      <d1>
+        {{ render_field(form2.name) }}
+        <br>
+        {{ render_field(form2.city) }}
+        <br>
+        {{ render_field(form2.state) }}
+        <br>
+        {{ render_field(form2.categories) }}
+        <br>
+        {{ render_field(form2.stars) }}
+      <p><input type=submit name='button' value='Advanced Search'></p>
+      </form>
+
 {% endblock %}

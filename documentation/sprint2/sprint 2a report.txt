@@ -1,0 +1,15 @@
+Group C
+https://github.com/ajiang13/CUS1166-group-C
+
+Alan:
+Fixed issues from sprint 1 (search based on specific fields).
+Added form and methods for advanced search (has display error)
+
+John:
+Added ability to sort search results. Certain filters have errors.
+
+Matt:
+Added view for displaying detailed restaurant info.
+
+Raeven:
+Added login page and ability to log in (only as admin currently). Will add functionality to store and authenticate users.
