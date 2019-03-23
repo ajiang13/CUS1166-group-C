@@ -24,3 +24,4 @@ class RegistrationForm(Form):
 class FilterForm(Form):
     choices = [('Name', 'Name'), ('City', 'City'), ('State', 'State'), ('Stars', 'Stars'), ('Reviews', 'Reviews')]
     select = SelectField('Sort by: ', choices = choices)
+    stars = FloatField("Exclude businesses below a __ star rating:")

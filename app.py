@@ -98,6 +98,7 @@ def search_results_filtered():
     results = []
     search_string = []
     filter = FilterForm(request.form)
+    min_stars = filter.data['stars']
 
     #Determing which field to search by(Default search), results = search_field
     if session['selection'] == 'Name' and session['search_string'] != '':
@@ -140,17 +141,18 @@ def search_results_filtered():
             search_string.append({'stars': {'$gte': q5}},)
         results = db.advanced_search(search_string)
         result_count = db.advanced_search_count(search_string)
-    
+
     if not results:
         flash('No results found')
         return redirect('/search_results')
-    if request.form['sortbutton'] == "Sort Ascending":
+    if request.form['sortbutton'] == "Sort Ascending" and not min_stars:
         sortby = filter.data['select']
         sortedresults = db.sort_request(sortby,results,1)
         return render_template('search_results.html', search=search, filterform = filter, results=sortedresults, result_count=result_count, search_string=search_string)
     else:
         sortby = filter.data['select']
         sortedresults = db.sort_request(sortby,results,-1)
+        #sortedresults = db.filter_by_stars(results, 3)
         return render_template('search_results.html', search=search, filterform = filter, results=sortedresults, result_count=result_count, search_string=search_string)
 
 

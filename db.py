@@ -102,3 +102,11 @@ def sort_request(request,results,reverse):
         return sort_by_review_count(results,reverse)
     else:
         return None
+
+def filter_by_stars(results,stars):
+    #We want to include documents with the entered num of stars
+    #while excluding results below that number
+    stars = stars - .1
+    star_results = db.business.find({'stars': {'$gt':stars}})
+    #Need to merge results and star_results and return the common documents
+    return results
