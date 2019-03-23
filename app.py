@@ -75,8 +75,14 @@ def search_results(search, advanced_search, form):
     if not results:
         flash('No results found')
         return redirect('/search')
+
+        # display results
     else:
-        return render_template('search_results.html', search=search, form=form, results=results, result_count=result_count, search_string=search_string)
+        table = Results(results)
+        table.border = True
+        return render_template('search_results.html', table=table)
+
+
 
 #login
 @app.route("/login", methods=['GET', 'POST'])
