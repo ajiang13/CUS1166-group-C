@@ -2,7 +2,7 @@
 from flask import Flask, render_template, url_for, request, redirect, flash
 import json
 import db
-from tables import Results
+from flask_table import Table, Col
 from forms import SearchForm, AdvancedSearchForm
 
 # Create an instance of Flask class
@@ -78,6 +78,7 @@ def search_results(search, advanced_search, form):
 
         # display results
     else:
+        results = 0
         table = Results(results)
         table.border = True
         return render_template('search_results.html', table=table)
