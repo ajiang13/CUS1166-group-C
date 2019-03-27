@@ -2,8 +2,18 @@
 from flask import Flask, render_template, url_for, request, redirect, flash, session
 import json
 import db
+<<<<<<< HEAD
 from flask_table import Table, Col
 from forms import SearchForm, AdvancedSearchForm
+=======
+<<<<<<< HEAD
+from tables import Results
+from forms import SearchForm, AdvancedSearchForm, FilterForm
+=======
+from flask_table import Table, Col
+from forms import SearchForm, AdvancedSearchForm
+>>>>>>> 84febac42959faf23dfc520f84e6e833c2386bb2
+>>>>>>> 4571ae91d6b9d382d01cd11b0e234d4d694f2713
 
 # Create an instance of Flask class
 app = Flask(__name__, template_folder='templates')
@@ -90,14 +100,41 @@ def search_results(search, advanced_search, form):
     if not results:
         flash('No results found')
         return redirect('/search')
+<<<<<<< HEAD
+=======
 
         # display results
     else:
+<<<<<<< HEAD
+        return render_template('search_results.html', search=search, form=form, filterform = filter, results=results, result_count=result_count, search_string=search_string)
+
+@app.route("/search_results_filtered", methods=['GET', 'POST'])
+def search_results_filtered():
+    results = []
+    search_string = []
+    filter = FilterForm(request.form)
+    min_stars = filter.data['stars']
+>>>>>>> 4571ae91d6b9d382d01cd11b0e234d4d694f2713
+
+        # display results
+    else:
+<<<<<<< HEAD
+=======
+        sortby = filter.data['select']
+        sortedresults = db.sort_request(sortby,results,-1)
+        #sortedresults = db.filter_by_stars(results, 3)
+        return render_template('search_results.html', search=search, filterform = filter, results=sortedresults, result_count=result_count, search_string=search_string)
+=======
+>>>>>>> 4571ae91d6b9d382d01cd11b0e234d4d694f2713
         results = 0
         table = Results(results)
         table.border = True
         return render_template('search_results.html', table=table)
 
+<<<<<<< HEAD
+=======
+>>>>>>> 84febac42959faf23dfc520f84e6e833c2386bb2
+>>>>>>> 4571ae91d6b9d382d01cd11b0e234d4d694f2713
 
 
 #login
