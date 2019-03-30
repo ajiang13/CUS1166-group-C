@@ -1,9 +1,9 @@
 #Imports
-from flask import Flask, render_template, url_for, request, redirect, flash
+from flask import Flask, render_template, url_for, request, redirect, flash, session
 import json
 import db
 from tables import Results
-from forms import SearchForm, AdvancedSearchForm
+from forms import SearchForm, AdvancedSearchForm, FilterForm
 
 # Create an instance of Flask class
 app = Flask(__name__, template_folder='templates')
@@ -17,43 +17,68 @@ def index():
 #Search
 @app.route("/search", methods=['GET', 'POST'])
 def search():
-    search = SearchForm(request.form)
     advanced_search = AdvancedSearchForm(request.form)
     #TO-DO - fix issue: submitting advanced search form raises an error due to first form being empty
     if request.method == 'POST':
-        if request.form['button'] == 'Search':
-            advanced_search = request.form.get('Advanced Search')
-            return search_results(search, advanced_search, form=search)
-        elif request.form['button'] == 'Advanced Search':
-            search = request.form.get('select')
-            return search_results(search, advanced_search, form=advanced_search)
-    return render_template('search.html', form=search, form2=advanced_search)
+        if request.form['button'] == 'Advanced Search':
+            return search_results(advanced_search, form=advanced_search)
+    return render_template('search.html', form=advanced_search)
 
 @app.route("/search_results", methods=['GET', 'POST'])
-def search_results(search, advanced_search, form):
+def search_results(advanced_search, form):
+    results = []
+    filter = FilterForm(request.form)
+
+    if advanced_search.data['name'] != '' or advanced_search.data['city'] != '' or advanced_search.data['state'] != '' or advanced_search.data['categories'] != '' or advanced_search.data['stars'] != '':
+        q1 = advanced_search.data['name']
+        q2 = advanced_search.data['city']
+        q3 = advanced_search.data['state']
+        q4 = advanced_search.data['categories']
+        q5 = advanced_search.data['stars']
+        #Creating sessions to pass into search_results_filtered
+        session['adv_search_name'] = q1
+        session['adv_search_city'] = q2
+        session['adv_search_state'] = q3
+        session['adv_search_categories'] = q4
+        session['adv_search_stars'] = q5
+
+        results, result_count = db.advanced_search(q1, q2, q3, q4, q5)
+    if not results:
+        flash('No results found')
+        return redirect('/search')
+    else:
+        return render_template('search_results.html', form=form, filterform = filter, results=results, result_count=result_count, q1=q1, q2=q2, q3=q3, q4=q4, q5=q5)
+
+@app.route("/search_results_filtered", methods=['GET', 'POST'])
+def search_results_filtered():
     results = []
     search_string = []
-    if search.data['select'] == 'Name' and search.data['search'] != '':
-        search_string = search.data['search']
+    filter = FilterForm(request.form)
+    min_stars = filter.data['stars']
+
+    #Determing which field to search by(Default search), results = search_field
+    if session['selection'] == 'Name' and session['search_string'] != '':
+        search_string = session['search_string']
         results = db.search_business_name(search_string)
         result_count = db.search_business_count(search_string)
-    elif search.data['select'] == 'City' and search.data['search'] != '':
-        search_string = search.data['search']
+    elif session['selection'] == 'City' and session['search_string'] != '':
+        search_string = session['search_string']
         results = db.search_city(search_string)
         result_count = db.search_city_count(search_string)
-    elif search.data['select'] == 'State' and search.data['search'] != '':
-        search_string = search.data['search']
+    elif session['selection'] == 'State' and session['search_string'] != '':
+        search_string = session['search_string']
         results = db.search_state(search_string)
         result_count = db.search_state_count(search_string)
-    elif search.data['select'] == 'Categories' and search.data['search'] != '':
-        search_string = search.data['search']
+    elif session['selection'] == 'Categories' and session['search_string'] != '':
+        search_string = session['search_string']
         results = db.search_categories(search_string)
         result_count = db.search_categories_count(search_string)
-    elif search.data['stars'] != '':
-        search_string = search.data['stars']
+    elif session['selection'] != '':
+        search_string = session['search_string']
         results = db.search_stars(search_string)
         result_count = db.search_stars_count(search_string)
-    elif advanced_search.data['name'] != '' or advanced_search.data['city'] != '' or advanced_search.data['state'] != '' or advanced_search.data['categories'] != '' or advanced_search.data['stars'] != '':
+    #If any info is entered into the advanced search fields, results = advanced_search
+    elif session['adv_search_name'] != '' or session['adv_search_city'] != '' or session['adv_search_state'] != '' or session['adv_search_categories'] != '' or session['adv_search_stars'] != '':
         q1 = advanced_search.data['name']
         q2 = advanced_search.data['city']
         q3 = advanced_search.data['state']
@@ -72,11 +97,20 @@ def search_results(search, advanced_search, form):
             search_string.append({'stars': {'$gte': q5}},)
         results = db.advanced_search(search_string)
         result_count = db.advanced_search_count(search_string)
+
     if not results:
         flash('No results found')
-        return redirect('/search')
+        return redirect('/search_results')
+    if request.form['sortbutton'] == "Sort Ascending" and not min_stars:
+        sortby = filter.data['select']
+        sortedresults = db.sort_request(sortby,results,1)
+        return render_template('search_results.html', search=search, filterform = filter, results=sortedresults, result_count=result_count, search_string=search_string)
     else:
-        return render_template('search_results.html', search=search, form=form, results=results, result_count=result_count, search_string=search_string)
+        sortby = filter.data['select']
+        sortedresults = db.sort_request(sortby,results,-1)
+        #sortedresults = db.filter_by_stars(results, 3)
+        return render_template('search_results.html', search=search, filterform = filter, results=sortedresults, result_count=result_count, search_string=search_string)
+
 
 #login
 @app.route("/login", methods=['GET', 'POST'])
