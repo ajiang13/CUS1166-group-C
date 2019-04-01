@@ -3,6 +3,7 @@ from flask import Flask, render_template, url_for, request, redirect, flash, ses
 import json
 import db
 <<<<<<< HEAD
+<<<<<<< HEAD
 from flask_table import Table, Col
 from forms import SearchForm, AdvancedSearchForm
 =======
@@ -14,6 +15,10 @@ from flask_table import Table, Col
 from forms import SearchForm, AdvancedSearchForm
 >>>>>>> 84febac42959faf23dfc520f84e6e833c2386bb2
 >>>>>>> 4571ae91d6b9d382d01cd11b0e234d4d694f2713
+=======
+from tables import Results
+from forms import SearchForm, AdvancedSearchForm, FilterForm
+>>>>>>> master
 
 # Create an instance of Flask class
 app = Flask(__name__, template_folder='templates')
@@ -101,11 +106,13 @@ def search_results(search, advanced_search, form):
         flash('No results found')
         return redirect('/search')
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
         # display results
+=======
+>>>>>>> master
     else:
-<<<<<<< HEAD
         return render_template('search_results.html', search=search, form=form, filterform = filter, results=results, result_count=result_count, search_string=search_string)
 
 @app.route("/search_results_filtered", methods=['GET', 'POST'])
@@ -124,6 +131,7 @@ def search_results_filtered():
         sortedresults = db.sort_request(sortby,results,-1)
         #sortedresults = db.filter_by_stars(results, 3)
         return render_template('search_results.html', search=search, filterform = filter, results=sortedresults, result_count=result_count, search_string=search_string)
+<<<<<<< HEAD
 =======
 >>>>>>> 4571ae91d6b9d382d01cd11b0e234d4d694f2713
         results = 0
@@ -135,6 +143,8 @@ def search_results_filtered():
 =======
 >>>>>>> 84febac42959faf23dfc520f84e6e833c2386bb2
 >>>>>>> 4571ae91d6b9d382d01cd11b0e234d4d694f2713
+=======
+>>>>>>> master
 
 
 #login
@@ -144,8 +154,9 @@ def login():
     if request.method == 'POST':
         if request.form['username'] != 'admin' or request.form['password'] != 'admin':
             error = 'Invalid Credentials. Please Try Again.'
-    else:
-        return render_template('login.html', error=error)
+        else:
+            return redirect('/')
+    return render_template('login.html', error=error)
 
 if __name__ == "__main__":
     app.run(debug=True, host='127.0.0.1', port=5110)
