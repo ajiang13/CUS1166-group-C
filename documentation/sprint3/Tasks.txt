@@ -1,0 +1,12 @@
+Use cases:
+Alan - UI/themes.
+Add bootstrap theme(s) and improve the general look.
+
+John - photo viewer.
+View photos for restaurants.
+
+Matt - add/edit info.
+Ability to update restaurant info in the database.
+
+Raeven - user registration.
+Allow users to create accounts and maintain data in database. Log-in with password authentication.
