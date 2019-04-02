@@ -68,12 +68,12 @@ def search_results_filtered():
     if request.form['sortbutton'] == "Sort Ascending":
         sortby = filter.data['select']
         sortedresults = db.sort_request(sortby,results,1)
-        return render_template('search_results.html', search=search, filterform = filter, results=sortedresults, result_count=result_count, search_string=search_string)
+        return render_template('search_results.html', filterform = filter, results=sortedresults, result_count=result_count)
     else:
         sortby = filter.data['select']
         sortedresults = db.sort_request(sortby,results,-1)
         #sortedresults = db.filter_by_stars(results, 3)
-        return render_template('search_results.html', search=search, filterform = filter, results=sortedresults, result_count=result_count, search_string=search_string)
+        return render_template('search_results.html', filterform = filter, results=sortedresults, result_count=result_count)
 
 
 #login
