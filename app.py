@@ -98,36 +98,44 @@ def search_results_filtered():
     results = []
     search_string = []
     filter = FilterForm(request.form)
-    min_stars = filter.data['stars']
 
-    #Determing which field to search by(Default search), results = search_field
-    if session['selection'] == 'Name' and session['search_string'] != '':
-        search_string = session['search_string']
+    #Creating sessions to pass into search_results_filtered
+    session['selection'] = search.data['select']
+
+    if search.data['select'] == 'Name' and search.data['search'] != '':
+        search_string = search.data['search']
+        session['']
         results = db.search_business_name(search_string)
         result_count = db.search_business_count(search_string)
-    elif session['selection'] == 'City' and session['search_string'] != '':
-        search_string = session['search_string']
+    elif search.data['select'] == 'City' and search.data['search'] != '':
+        search_string = search.data['search']
         results = db.search_city(search_string)
         result_count = db.search_city_count(search_string)
-    elif session['selection'] == 'State' and session['search_string'] != '':
-        search_string = session['search_string']
+    elif search.data['select'] == 'State' and search.data['search'] != '':
+        search_string = search.data['search']
         results = db.search_state(search_string)
         result_count = db.search_state_count(search_string)
-    elif session['selection'] == 'Categories' and session['search_string'] != '':
-        search_string = session['search_string']
+    elif search.data['select'] == 'Categories' and search.data['search'] != '':
+        search_string = search.data['search']
         results = db.search_categories(search_string)
         result_count = db.search_categories_count(search_string)
-    elif session['selection'] != '':
-        search_string = session['search_string']
+    elif search.data['select'] != '':
+        search_string = search.data['stars']
         results = db.search_stars(search_string)
         result_count = db.search_stars_count(search_string)
-    #If any info is entered into the advanced search fields, results = advanced_search
-    elif session['adv_search_name'] != '' or session['adv_search_city'] != '' or session['adv_search_state'] != '' or session['adv_search_categories'] != '' or session['adv_search_stars'] != '':
+    elif advanced_search.data['name'] != '' or advanced_search.data['city'] != '' or advanced_search.data['state'] != '' or advanced_search.data['categories'] != '' or advanced_search.data['stars'] != '':
         q1 = advanced_search.data['name']
         q2 = advanced_search.data['city']
         q3 = advanced_search.data['state']
         q4 = advanced_search.data['categories']
         q5 = advanced_search.data['stars']
+        #Creating sessions to pass into search_results_filtered
+        session['adv_search_name'] = q1
+        session['adv_search_city'] = q2
+        session['adv_search_state'] = q3
+        session['adv_search_categories'] = q4
+        session['adv_search_stars'] = q5
+
         search_string = {}
         if q1 != 'null':
             search_string.append({'$text': {'$search': q1}},)
@@ -144,8 +152,8 @@ def search_results_filtered():
 
     if not results:
         flash('No results found')
-        return redirect('/search_results')
-    if request.form['sortbutton'] == "Sort Ascending" and not min_stars:
+        return redirect('/search')
+    if request.form['sortbutton'] == "Sort Ascending":
         sortby = filter.data['select']
         sortedresults = db.sort_request(sortby,results,1)
         return render_template('search_results.html', search=search, filterform = filter, results=sortedresults, result_count=result_count, search_string=search_string)
