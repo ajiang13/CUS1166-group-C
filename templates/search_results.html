@@ -1,10 +1,12 @@
 {% extends 'layout.html' %}
 {% block title %}Search results{% endblock %}
-{% block body %}
-    <h1>Results</h1>
+{% block app_content %}
+    <h1>Search Results</h1>
     <i>{{result_count}} result(s).</i>
-
-    <table>
+    {{ pagination.info }}
+    {{ pagination.links }}
+    <table class="table table-hover">
+    <th><strong>Index</strong></th>
     <th><strong>Name</strong></th>
     <th><strong>Address</strong></th>
     <th><strong>City</strong></th>
@@ -16,6 +18,7 @@
 
       {% for document in results %}
       <tr>
+      <td>{{ loop.index + (page - 1) * per_page }}</td>
       <td>{{document.name}}</td>
       <td>{{document.address}}</td>
       <td>{{document.city}}</td>
@@ -27,4 +30,5 @@
       </tr>
       {% endfor %}
       </table>
+      {{ pagination.links }}
 {% endblock %}
