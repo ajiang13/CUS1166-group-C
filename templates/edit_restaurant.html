@@ -1,0 +1,23 @@
+<doctype html>
+<title>Edit Restaurant</title>
+<h2>Edit Album</h2>
+
+{% from "_formhelpers.html" import render_field %}
+<form method=post>
+    <dl>
+        {{ render_field(form.name) }}
+        {{ render_field(form.address) }}
+        {{ render_field(form.city) }}
+        {{ render_field(form.state) }}
+        {{ render_field(form.postal_code) }}
+        {{ render_field(form.latitude) }}
+        {{ render_field(form.longitude) }}
+        {{ render_field(form.stars) }}
+        {{ render_field(form.review_count) }}
+        {{ render_field(form.is_open) }}
+        {{ render_field(form.attributes) }}
+        {{ render_field(form.categories) }}
+        {{ render_field(form.hours) }}
+      </dl>
+    <p><input type=submit value=Submit>
+</form>

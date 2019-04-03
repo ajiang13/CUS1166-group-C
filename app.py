@@ -91,7 +91,11 @@ def search_results(search, advanced_search, form):
         flash('No results found')
         return redirect('/search')
     else:
-        return render_template('search_results.html', search=search, form=form, filterform = filter, results=results, result_count=result_count, search_string=search_string)
+        table = Results(results)
+        table.border = True
+        return render_template('search_results.html', search=search, form=form, filterform = filter, results=results, result_count=result_count, search_string=search_string, table =table)
+
+
 
 @app.route("/search_results_filtered", methods=['GET', 'POST'])
 def search_results_filtered():
@@ -154,6 +158,23 @@ def search_results_filtered():
         sortedresults = db.sort_request(sortby,results,-1)
         #sortedresults = db.filter_by_stars(results, 3)
         return render_template('search_results.html', search=search, filterform = filter, results=sortedresults, result_count=result_count, search_string=search_string)
+
+#Edit
+@app.route('/item/<int:id>', methods=['GET', 'POST'])
+def edit(id):
+    qry = db_session.query(Restaurant).filter(Restaurant).id==id)
+    restaurant = qry.first()
+
+    if restaurant:
+        form = AlbumForm(formdata=request.form, obj=restaurant)
+        if request.method == 'POST' and form.validate():
+            # save edits
+            save_changes(restaurant, form)
+            flash('Restaurant updated successfully!')
+            return redirect('/')
+        return render_template('edit_restaurant.html', form=form)
+    else:
+        return 'Error loading #{id}'.format(id=id)
 
 
 #login
