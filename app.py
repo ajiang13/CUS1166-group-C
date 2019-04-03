@@ -162,7 +162,8 @@ def search_results_filtered():
 #Edit
 @app.route('/item/<int:id>', methods=['GET', 'POST'])
 def edit(id):
-    qry = db_session.query(Restaurant).filter(Restaurant).id==id)
+
+    qry = db.query(Restaurant).filter(Restaurant).id==id
     restaurant = qry.first()
 
     if restaurant:
