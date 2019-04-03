@@ -57,64 +57,28 @@ def search_results(advanced_search, form):
 @app.route("/search_results_filtered", methods=['GET', 'POST'])
 def search_results_filtered():
     results = []
-    search_string = []
     filter = FilterForm(request.form)
-    min_stars = filter.data['stars']
 
-    #Determing which field to search by(Default search), results = search_field
-    if session['selection'] == 'Name' and session['search_string'] != '':
-        search_string = session['search_string']
-        results = db.search_business_name(search_string)
-        result_count = db.search_business_count(search_string)
-    elif session['selection'] == 'City' and session['search_string'] != '':
-        search_string = session['search_string']
-        results = db.search_city(search_string)
-        result_count = db.search_city_count(search_string)
-    elif session['selection'] == 'State' and session['search_string'] != '':
-        search_string = session['search_string']
-        results = db.search_state(search_string)
-        result_count = db.search_state_count(search_string)
-    elif session['selection'] == 'Categories' and session['search_string'] != '':
-        search_string = session['search_string']
-        results = db.search_categories(search_string)
-        result_count = db.search_categories_count(search_string)
-    elif session['selection'] != '':
-        search_string = session['search_string']
-        results = db.search_stars(search_string)
-        result_count = db.search_stars_count(search_string)
-    #If any info is entered into the advanced search fields, results = advanced_search
-    elif session['adv_search_name'] != '' or session['adv_search_city'] != '' or session['adv_search_state'] != '' or session['adv_search_categories'] != '' or session['adv_search_stars'] != '':
-        q1 = advanced_search.data['name']
-        q2 = advanced_search.data['city']
-        q3 = advanced_search.data['state']
-        q4 = advanced_search.data['categories']
-        q5 = advanced_search.data['stars']
-        search_string = {}
-        if q1 != 'null':
-            search_string.append({'$text': {'$search': q1}},)
-        if q2 != 'null':
-            search_string.append({'city': {'$regex': q2, '$options': 'i'}},)
-        if q3 != 'null':
-            search_string.append({'state': {'$regex': q3, '$options': 'i'}},)
-        if q4 != 'null':
-            search_string.append({'categories': {'$regex': q4, '$options': 'i'}},)
-        if q5 != 'null':
-            search_string.append({'stars': {'$gte': q5}},)
-        results = db.advanced_search(search_string)
-        result_count = db.advanced_search_count(search_string)
+    if session['adv_search_name'] != '' or session['adv_search_city'] != '' or session['adv_search_state'] != '' or session['adv_search_categories'] != '' or session['adv_search_stars'] != '':
+        q1 = session['adv_search_name']
+        q2 = session['adv_search_city']
+        q3 = session['adv_search_state']
+        q4 = session['adv_search_categories']
+        q5 = session['adv_search_stars']
 
+        results, result_count = db.advanced_search(q1, q2, q3, q4, q5)
     if not results:
         flash('No results found')
-        return redirect('/search_results')
-    if request.form['sortbutton'] == "Sort Ascending" and not min_stars:
+        return redirect('/search')
+    if request.form['sortbutton'] == "Sort Ascending":
         sortby = filter.data['select']
         sortedresults = db.sort_request(sortby,results,1)
-        return render_template('search_results.html', search=search, filterform = filter, results=sortedresults, result_count=result_count, search_string=search_string)
+        return render_template('search_results.html', filterform = filter, results=sortedresults, result_count=result_count)
     else:
         sortby = filter.data['select']
         sortedresults = db.sort_request(sortby,results,-1)
         #sortedresults = db.filter_by_stars(results, 3)
-        return render_template('search_results.html', search=search, filterform = filter, results=sortedresults, result_count=result_count, search_string=search_string)
+        return render_template('search_results.html', filterform = filter, results=sortedresults, result_count=result_count)
 
 #login
 @app.route("/login", methods=['GET', 'POST'])
