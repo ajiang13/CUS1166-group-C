@@ -8,55 +8,21 @@ collection = db.business
 #Must create index to be able to search text
 db.business.create_index([('name', 'text')])
 
-#Search for businesses by name (keyword search with ORs between terms)
-#Returns all matching documents
-def search_business_name(search):
-    results = db.business.find({'$text': {'$search': search}})
-    return results
-#Returns the number of documents found
-def search_business_count(search):
-    result_count = db.business.find({'$text': {'$search': search}}).count()
-    return result_count
-
-def search_city(search):
-    results = db.business.find({'city': {'$regex': search, '$options': 'i'}})
-    return results
-
-def search_city_count(search):
-    result_count = db.business.find({'city': {'$regex': search, '$options': 'i'}}).count()
-    return result_count
-
-def search_state(search):
-    results = db.business.find({'state': {'$regex': search, '$options': 'i'}})
-    return results
-
-def search_state_count(search):
-    result_count = db.business.find({'state': {'$regex': search, '$options': 'i'}}).count()
-    return result_count
-
-def search_stars(stars):
-    results = db.business.find({'stars': {'$gte': stars}})
-    return results
-
-def search_stars_count(stars):
-    result_count = db.business.find({'stars': {'$gte': stars}}).count()
-    return result_count
-
-def search_categories(search):
-    results = db.business.find({'categories': {'$regex': search, '$options': 'i'}})
-    return results
-
-def search_categories_count(search):
-    result_count = db.business.find({'categories': {'$regex': search, '$options': 'i'}}).count()
-    return result_count
-
-def advanced_search(search):
-    results = db.business.find(search)
-    return results
-
-def advanced_search_count(search):
-    result_count = db.business.find(search)
-    return result_count
+def advanced_search(q1, q2, q3, q4, q5):
+    search_string = {}
+    if q1 != '':
+        search_string.update({'$text': {'$search': q1}})
+    if q2 != '':
+        search_string.update({'city': {'$regex': q2, '$options': 'i'}})
+    if q3 != '':
+        search_string.update({'state': {'$regex': q3, '$options': 'i'}})
+    if q4 != '':
+        search_string.update({'categories': {'$regex': q4, '$options': 'i'}})
+    if q5 != None:
+        search_string.update({'stars': {'$gte': q5}})
+    results = db.business.find(search_string)
+    result_count = db.business.count_documents(search_string)
+    return results, result_count
 
 #Funtions for sorting results
 def sort_by_name(results,reverse):
