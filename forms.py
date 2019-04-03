@@ -1,4 +1,4 @@
-from wtforms import Form, StringField, SelectField, TextField, FloatField, PasswordField, validators
+from wtforms import Form, StringField, SelectField, TextField, FloatField, SubmitField, PasswordField, validators
 
 class SearchForm(Form):
     choices = [('Name', 'Name'), ('City', 'City'), ('State', 'State Code'), ('Categories', 'Categories')]
@@ -25,3 +25,14 @@ class FilterForm(Form):
     choices = [('Name', 'Name'), ('City', 'City'), ('State', 'State'), ('Stars', 'Stars'), ('Reviews', 'Reviews')]
     select = SelectField('Sort by: ', choices = choices)
     stars = FloatField("Exclude businesses below a __ star rating:")
+
+class RestaurantForm(Form):
+    name = StringField("Name")
+    city = StringField('City')
+    state = StringField('State Code')
+    categories = StringField('Categories')
+    stars = FloatField('Rating')
+    latitude = StringField('latitude')
+    longitude = StringField('longitude')
+    postal_code = StringField('postal_code')
+    edit = SubmitField("Edit")

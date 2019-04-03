@@ -3,7 +3,7 @@ from flask import Flask, render_template, url_for, request, redirect, flash, ses
 import json
 import db
 from tables import Results
-from forms import SearchForm, AdvancedSearchForm, FilterForm
+from forms import SearchForm, AdvancedSearchForm, FilterForm, RestaurantForm
 
 # Create an instance of Flask class
 app = Flask(__name__, template_folder='templates')
