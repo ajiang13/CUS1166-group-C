@@ -166,7 +166,7 @@ def edit(id):
     restaurant = qry.first()
 
     if restaurant:
-        form = AlbumForm(formdata=request.form, obj=restaurant)
+        form = RestaurantForm(formdata=request.form, obj=restaurant)
         if request.method == 'POST' and form.validate():
             # save edits
             save_changes(restaurant, form)
