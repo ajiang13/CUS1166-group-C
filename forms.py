@@ -1,4 +1,5 @@
-from wtforms import Form, StringField, SelectField, TextField, FloatField, PasswordField, validators
+from wtforms import StringField, SelectField, TextField, FloatField, PasswordField, validators
+from flask_wtf import Form
 
 class SearchForm(Form):
     choices = [('Name', 'Name'), ('City', 'City'), ('State', 'State Code'), ('Categories', 'Categories')]

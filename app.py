@@ -67,18 +67,24 @@ def search_results_filtered():
         q5 = session['adv_search_stars']
 
         results, result_count = db.advanced_search(q1, q2, q3, q4, q5)
+        total = result_count
+        page = 1
+        per_page = 20
+        offset = (page - 1) * per_page
+        results_for_render = results.skip(offset).limit(per_page)
+        pagination = Pagination(page=page, per_page=per_page, offset=offset, total=total, format_total=True, format_number=True, css_framework='bootstrap4')
     if not results:
         flash('No results found')
         return redirect('/search')
     if request.form['sortbutton'] == "Sort Ascending":
         sortby = filter.data['select']
         sortedresults = db.sort_request(sortby,results,1)
-        return render_template('search_results.html', filterform = filter, results=sortedresults, result_count=result_count)
+        return render_template('search_results.html', filterform = filter, results=sortedresults, result_count=result_count, page=page, per_page=per_page, pagination=pagination)
     else:
         sortby = filter.data['select']
         sortedresults = db.sort_request(sortby,results,-1)
         #sortedresults = db.filter_by_stars(results, 3)
-        return render_template('search_results.html', filterform = filter, results=sortedresults, result_count=result_count)
+        return render_template('search_results.html', filterform = filter, results=sortedresults, result_count=result_count, page=page, per_page=per_page, pagination=pagination)
 
 #login
 @app.route("/login", methods=['GET', 'POST'])
