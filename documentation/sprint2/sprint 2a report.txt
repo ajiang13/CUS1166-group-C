@@ -1,5 +1,15 @@
 Group C
-https://github.com/ajiang13/CUS1166-group-C
+
+Deliverable for sprint 2a
+https://github.com/ajiang13/CUS1166-group-C/releases/tag/v0.2-sprint2a
+Deliverable for sprint 2a for John
+https://github.com/ajiang13/CUS1166-group-C/releases/tag/v0.2-sprint2a-hoey
+
+Documentation is on Github in /documentation/sprint2
+
+Note: we need to work on merging John's work (filtering) into the master branch as it's not compatible with the changes made for advanced search as-is. See first release for other 3 use cases. We will be changing the implementation to make it work; the second release is just evidence of John's work (some functioning filtering).
+
+Tasks:
 
 Alan:
 Fixed issues from sprint 1 (search based on specific fields).
