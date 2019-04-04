@@ -1,18 +1,26 @@
 {% extends 'layout.html' %}
-{% block title %}Search results{% endblock %}
-{% block body %}
-    <h1>Results</h1>
-    <i>{{result_count}} result(s).</i>
-    {% from '_formhelpers.html' import render_field %}
-    <form value='filter' method='post' action='search_results_filtered'>
-      <d1>
-        {{render_field(filterform.select)}}
-        <br>
-        <p><input type=submit name='sortbutton' value='Sort Ascending'>
-        <input type=submit name='sortbutton' value='Sort Descending'></p>
-      </form>
+{% import 'bootstrap/wtf.html' as wtf %}
 
-    <table>
+{% block title %}Search results{% endblock %}
+{% block app_content %}
+    <h1>Search Results</h1>
+    {{ pagination.info }}
+    {{ pagination.links }}
+
+  <form name='filter' value='filter' method='post' role='form' action='search_results_filtered'>
+    {{ filterform.csfr }}
+    <div style='width: 15%' class='form-control'>
+    {{ wtf.form_field(filterform.select) }}
+    </div>
+    <br>
+    <br>
+    <div>
+       <button type='submit' class='btn' name='sortbutton' value='Sort Ascending'>Sort Ascending</button>
+       <button type='submit' class='btn' name='sortbutton' value='Sort Descending'>Sort Descending</button>
+    </div>
+  </form>
+    <table class="table table-hover">
+    <th><strong>Index</strong></th>
     <th><strong>Name</strong></th>
     <th><strong>Address</strong></th>
     <th><strong>City</strong></th>
@@ -24,6 +32,7 @@
 
       {% for document in results %}
       <tr>
+      <td>{{ loop.index + (page - 1) * per_page }}</td>
       <td>{{document.name}}</td>
       <td>{{document.address}}</td>
       <td>{{document.city}}</td>
@@ -35,4 +44,5 @@
       </tr>
       {% endfor %}
       </table>
+      {{ pagination.links }}
 {% endblock %}

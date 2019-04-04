@@ -4,9 +4,12 @@ import json
 import db
 from tables import Results
 from forms import SearchForm, AdvancedSearchForm, FilterForm
+from flask_bootstrap import Bootstrap
+from flask_paginate import Pagination, get_page_args
 
 # Create an instance of Flask class
 app = Flask(__name__, template_folder='templates')
+bootstrap = Bootstrap(app)
 app.secret_key = "key"
 
 #Routes
@@ -18,17 +21,14 @@ def index():
 @app.route("/search", methods=['GET', 'POST'])
 def search():
     advanced_search = AdvancedSearchForm(request.form)
-    #TO-DO - fix issue: submitting advanced search form raises an error due to first form being empty
     if request.method == 'POST':
-        if request.form['button'] == 'Advanced Search':
-            return search_results(advanced_search, form=advanced_search)
+        return search_results(advanced_search, form=advanced_search)
     return render_template('search.html', form=advanced_search)
 
 @app.route("/search_results", methods=['GET', 'POST'])
 def search_results(advanced_search, form):
     results = []
     filter = FilterForm(request.form)
-
     if advanced_search.data['name'] != '' or advanced_search.data['city'] != '' or advanced_search.data['state'] != '' or advanced_search.data['categories'] != '' or advanced_search.data['stars'] != '':
         q1 = advanced_search.data['name']
         q2 = advanced_search.data['city']
@@ -41,13 +41,18 @@ def search_results(advanced_search, form):
         session['adv_search_state'] = q3
         session['adv_search_categories'] = q4
         session['adv_search_stars'] = q5
-
         results, result_count = db.advanced_search(q1, q2, q3, q4, q5)
+        total = result_count
+        page = 1
+        per_page = 20
+        offset = (page - 1) * per_page
+        results_for_render = results.skip(offset).limit(per_page)
+        pagination = Pagination(page=page, per_page=per_page, offset=offset, total=total, format_total=True, format_number=True, css_framework='bootstrap4')
     if not results:
         flash('No results found')
         return redirect('/search')
     else:
-        return render_template('search_results.html', form=form, filterform = filter, results=results, result_count=result_count, q1=q1, q2=q2, q3=q3, q4=q4, q5=q5)
+        return render_template('search_results.html', form=form, filterform=filter, results=results, result_count=result_count, q1=q1, q2=q2, q3=q3, q4=q4, q5=q5, page=page, per_page=per_page, pagination=pagination)
 
 @app.route("/search_results_filtered", methods=['GET', 'POST'])
 def search_results_filtered():
@@ -62,19 +67,24 @@ def search_results_filtered():
         q5 = session['adv_search_stars']
 
         results, result_count = db.advanced_search(q1, q2, q3, q4, q5)
+        total = result_count
+        page = 1
+        per_page = 20
+        offset = (page - 1) * per_page
+        results_for_render = results.skip(offset).limit(per_page)
+        pagination = Pagination(page=page, per_page=per_page, offset=offset, total=total, format_total=True, format_number=True, css_framework='bootstrap4')
     if not results:
         flash('No results found')
         return redirect('/search')
     if request.form['sortbutton'] == "Sort Ascending":
         sortby = filter.data['select']
         sortedresults = db.sort_request(sortby,results,1)
-        return render_template('search_results.html', filterform = filter, results=sortedresults, result_count=result_count)
+        return render_template('search_results.html', filterform = filter, results=sortedresults, result_count=result_count, page=page, per_page=per_page, pagination=pagination)
     else:
         sortby = filter.data['select']
         sortedresults = db.sort_request(sortby,results,-1)
         #sortedresults = db.filter_by_stars(results, 3)
-        return render_template('search_results.html', filterform = filter, results=sortedresults, result_count=result_count)
-
+        return render_template('search_results.html', filterform = filter, results=sortedresults, result_count=result_count, page=page, per_page=per_page, pagination=pagination)
 
 #login
 @app.route("/login", methods=['GET', 'POST'])
