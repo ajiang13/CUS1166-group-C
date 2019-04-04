@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 {% block title %}Search{% endblock %}
-{% block body %}
+{% block app_content %}
     <h1>Search</h1>
     {% with messages = get_flashed_messages() %}
       {% if messages %}
@@ -12,30 +12,25 @@
       {% endif %}
     {% endwith %}
 
-    {% from '_formhelpers.html' import render_field %}
-    <form name='search' value='search' method='post'>
-      <dl>
-        {{ render_field(form.select) }}
-        <p>
-        {{ render_field(form.search) }}
-        <br>
-        {{ render_field(form.stars) }}
-      </dl>
-      <p><input type=submit name='button' value=Search>
-    </form>
-    <br>
-    <form name='advanced_search' value='advanced_search' method='post'>
-      <d1>
-        {{ render_field(form2.name) }}
-        <br>
-        {{ render_field(form2.city) }}
-        <br>
-        {{ render_field(form2.state) }}
-        <br>
-        {{ render_field(form2.categories) }}
-        <br>
-        {{ render_field(form2.stars) }}
-      <p><input type=submit name='button' value='Advanced Search'></p>
+    <form name='advanced_search' value='advanced_search' method='post' role='form'>
+      {{ form.csrf }}
+      <div class='form-group'>
+        <label for='name'>Name</label>
+        <input type='text' class='form-control' id='name' name='name' placeholder=''>
+
+        <label for='city'>City</label>
+        <input type='text' class='form-control' id='city' name='city' placeholder=''>
+
+        <label for='state'>State Code</label>
+        <input type='text' class='form-control' id='state' name='state' placeholder='e.g. NY'>
+
+        <label for='Categories'>Categories</label>
+        <input type='text' class='form-control' id='categories' name='categories' placeholder='e.g. Italian'>
+
+        <label for='stars'>Rating</label>
+        <input type='float' class='form-control' id='stars' name='stars' placeholder='e.g. 4.5'>
+      </div>
+      <button type='submit' class='btn'>Advanced Search</button>
       </form>
 
 {% endblock %}
