@@ -25,3 +25,15 @@ class RegistrationForm(Form):
 class FilterForm(Form):
     choices = [('Name', 'Name'), ('City', 'City'), ('State', 'State'), ('Stars', 'Stars'), ('Reviews', 'Reviews')]
     select = SelectField('Sort by: ', choices = choices)
+
+class RestaurantForm(Form):
+    is_open = [('Open', 'Open'), ('Closed','Closed')]
+    name = StringField('Name')
+    city = StringField('City')
+    state = StringField('State')
+    categories = StringField('Categories')
+    latitude = StringField('latitude')
+    longitude = StringField('longitude')
+    hours = StringField('hours')
+    categories = StringField('categories')
+    is_open = SelectField('Availability', choices=is_open)
