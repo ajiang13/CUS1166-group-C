@@ -3,6 +3,7 @@ import pymongo
 client = pymongo.MongoClient('localhost', 27017)
 db = client.yelp
 collection = db.business
+collection2 = db.pictures
 
 #Create index on name field
 #Must create index to be able to search text
@@ -69,10 +70,27 @@ def sort_request(request,results,reverse):
     else:
         return None
 
-def filter_by_stars(results,stars):
-    #We want to include documents with the entered num of stars
-    #while excluding results below that number
-    stars = stars - .1
-    star_results = db.business.find({'stars': {'$gt':stars}})
-    #Need to merge results and star_results and return the common documents
-    return results
+#Finds the corresponding doc by id in pictures collection
+#Returns a new results with matching business_ids, but from pictures collection
+def photo_results(results):
+    picture_results = []
+    for document in results:
+        if db.pictures.findOne(document.business_id):
+            picture_doc = db.pictures.findOne(document.business_id)
+            picture_results.append(picture_doc)
+    return picture_results
+
+#Returns a single photo_id 
+def find_photo_url(document, results):
+    pictures = photo_results(results)
+    for pic in pictures:
+        if document.business_id == pic.business_id
+        return pic.photo_id
+
+#Returns a dictionary of picture file names for the passed results
+def find_photo_urls(results):
+    pictures = photo_results(results)
+    picture_urls = {}
+    for picture in pictures:
+        picture_urls[picture.business_id] = picture.photo_id
+    return picture_urls

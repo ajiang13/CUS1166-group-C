@@ -28,6 +28,7 @@ def search():
 @app.route("/search_results", methods=['GET', 'POST'])
 def search_results(advanced_search, form):
     results = []
+    thumbnails = []
     filter = FilterForm(request.form)
     if advanced_search.data['name'] != '' or advanced_search.data['city'] != '' or advanced_search.data['state'] != '' or advanced_search.data['categories'] != '' or advanced_search.data['stars'] != '':
         q1 = advanced_search.data['name']
@@ -43,16 +44,19 @@ def search_results(advanced_search, form):
         session['adv_search_stars'] = q5
         results, result_count = db.advanced_search(q1, q2, q3, q4, q5)
         total = result_count
+        #Pagination
         page = 1
         per_page = 20
         offset = (page - 1) * per_page
         results_for_render = results.skip(offset).limit(per_page)
         pagination = Pagination(page=page, per_page=per_page, offset=offset, total=total, format_total=True, format_number=True, css_framework='bootstrap4')
+
     if not results:
         flash('No results found')
         return redirect('/search')
     else:
-        return render_template('search_results.html', form=form, filterform=filter, results=results, result_count=result_count, q1=q1, q2=q2, q3=q3, q4=q4, q5=q5, page=page, per_page=per_page, pagination=pagination)
+        photo_results = photo_results(results)
+        return render_template('search_results.html', form=form, filterform=filter, photo_results = photo_results, results=results, result_count=result_count, q1=q1, q2=q2, q3=q3, q4=q4, q5=q5, page=page, per_page=per_page, pagination=pagination)
 
 @app.route("/search_results_filtered", methods=['GET', 'POST'])
 def search_results_filtered():
