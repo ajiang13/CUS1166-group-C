@@ -1,5 +1,8 @@
-<doctype html>
-<title>Edit Restaurant</title>
+{% extends 'layout.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block title %}Edit restaurant{% endblock %}
+{% block app_content %}
 <h2>Edit Restaurant</h2>
 
 {% from "_formhelpers.html" import render_field %}
@@ -12,3 +15,4 @@
     </dl>
     <p><input type=submit value=Submit>
 </form>
+{% endblock %}

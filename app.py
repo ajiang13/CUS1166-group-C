@@ -57,9 +57,7 @@ def search_results(advanced_search, form, page):
         flash('No results found')
         return redirect('/search')
     else:
-        table = Results(results)
-        table.border = True
-        return render_template('search_results.html', form=form, filterform=filter, results=results, result_count=result_count, q1=q1, q2=q2, q3=q3, q4=q4, q5=q5, page=page, per_page=per_page, pagination=pagination, table=table)
+        return render_template('search_results.html', form=form, filterform=filter, results=results, result_count=result_count, q1=q1, q2=q2, q3=q3, q4=q4, q5=q5, page=page, per_page=per_page, pagination=pagination)
 
 @app.route("/search_results_filtered", methods=['GET', 'POST'])
 def search_results_filtered():
@@ -101,7 +99,7 @@ def new_restaurant():
     """
     form = RestaurantForm(request.form)
     if request.method == 'POST' and form.validate():
-        # save the album
+        # save the restaurant
         restaurant = Restaurant()
         save_changes(restaurant, form, new=True)
         flash('Restaurant created successfully!')
