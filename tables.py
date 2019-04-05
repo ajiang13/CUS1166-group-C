@@ -1,4 +1,4 @@
-from flask_table import Table, Col
+from flask_table import Table, Col, LinkCol
 
 class Results(Table):
     business_id = Col('Id', show=False)
@@ -15,3 +15,4 @@ class Results(Table):
     attributes = Col('Attributes')
     categories = Col('Categories')
     hours = Col('Hours')
+    edit = LinkCol('Edit', 'edit', url_kwargs=dict(id='id'))
