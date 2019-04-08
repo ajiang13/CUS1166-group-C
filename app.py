@@ -1,9 +1,10 @@
+
 #Imports
 from flask import Flask, render_template, url_for, request, redirect, flash, session
 import json
 import db
 from tables import Results
-from forms import SearchForm, AdvancedSearchForm, FilterForm
+from forms import SearchForm, AdvancedSearchForm, FilterForm, RestaurantForm
 from flask_bootstrap import Bootstrap
 from flask_paginate import Pagination, get_page_args
 
@@ -21,12 +22,15 @@ def index():
 @app.route("/search", methods=['GET', 'POST'])
 def search():
     advanced_search = AdvancedSearchForm(request.form)
+    page = request.args.get('page', '1')
+    page = int(page)
     if request.method == 'POST':
-        return search_results(advanced_search, form=advanced_search)
+        return search_results(advanced_search, form=advanced_search, page=page)
     return render_template('search.html', form=advanced_search)
 
-@app.route("/search_results", methods=['GET', 'POST'])
-def search_results(advanced_search, form):
+@app.route("/search_results/page/<int:page>", methods=['GET', 'POST'])
+@app.route("/search_results", defaults={'page': 1}, methods=['GET', 'POST'])
+def search_results(advanced_search, form, page):
     results = []
     filter = FilterForm(request.form)
     if advanced_search.data['name'] != '' or advanced_search.data['city'] != '' or advanced_search.data['state'] != '' or advanced_search.data['categories'] != '' or advanced_search.data['stars'] != '':
@@ -43,7 +47,8 @@ def search_results(advanced_search, form):
         session['adv_search_stars'] = q5
         results, result_count = db.advanced_search(q1, q2, q3, q4, q5)
         total = result_count
-        page = 1
+        page = request.args.get('page', '1')
+        page = int(page)
         per_page = 20
         offset = (page - 1) * per_page
         results_for_render = results.skip(offset).limit(per_page)
@@ -68,7 +73,8 @@ def search_results_filtered():
 
         results, result_count = db.advanced_search(q1, q2, q3, q4, q5)
         total = result_count
-        page = 1
+        page = request.args.get('page', '1')
+        page = int(page)
         per_page = 20
         offset = (page - 1) * per_page
         results_for_render = results.skip(offset).limit(per_page)
@@ -76,7 +82,7 @@ def search_results_filtered():
     if not results:
         flash('No results found')
         return redirect('/search')
-    if request.form['sortbutton'] == "Sort Ascending":
+    if request.form.get('sortbutton') == "Sort Ascending":
         sortby = filter.data['select']
         sortedresults = db.sort_request(sortby,results,1)
         return render_template('search_results.html', filterform = filter, results=sortedresults, result_count=result_count, page=page, per_page=per_page, pagination=pagination)
@@ -85,6 +91,38 @@ def search_results_filtered():
         sortedresults = db.sort_request(sortby,results,-1)
         #sortedresults = db.filter_by_stars(results, 3)
         return render_template('search_results.html', filterform = filter, results=sortedresults, result_count=result_count, page=page, per_page=per_page, pagination=pagination)
+
+@app.route('/new_restaurant', methods=['GET', 'POST'])
+def new_restaurant():
+    """
+    Add a new restaurant
+    """
+    form = RestaurantForm(request.form)
+    if request.method == 'POST' and form.validate():
+        # save the restaurant
+        restaurant = Restaurant()
+        save_changes(restaurant, form, new=True)
+        flash('Restaurant created successfully!')
+        return redirect('/')
+    return render_template('new_restaurant.html', form=form)
+
+#Edit
+@app.route('/item/<int:id>', methods=['GET', 'POST'])
+def edit(id):
+
+    qry = db.query(Restaurant).filter(Restaurant).id==id
+    restaurant = qry.first()
+
+    if restaurant:
+        form = RestaurantForm(formdata=request.form, obj=restaurant)
+        if request.method == 'POST' and form.validate():
+            # save edits
+            save_changes(restaurant, form)
+            flash('Restaurant updated successfully!')
+            return redirect('/')
+        return render_template('edit_restaurant.html', form=form)
+    else:
+        return 'Error loading #{id}'.format(id=id)
 
 #login
 @app.route("/login", methods=['GET', 'POST'])
