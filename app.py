@@ -55,8 +55,8 @@ def search_results(advanced_search, form):
         flash('No results found')
         return redirect('/search')
     else:
-        photo_results = photo_results(results)
-        return render_template('search_results.html', form=form, filterform=filter, photo_results = photo_results, results=results, result_count=result_count, q1=q1, q2=q2, q3=q3, q4=q4, q5=q5, page=page, per_page=per_page, pagination=pagination)
+        db.photo_results(results)
+        return render_template('search_results.html', form=form, filterform=filter, results=results, result_count=result_count, q1=q1, q2=q2, q3=q3, q4=q4, q5=q5, page=page, per_page=per_page, pagination=pagination)
 
 @app.route("/search_results_filtered", methods=['GET', 'POST'])
 def search_results_filtered():
@@ -87,7 +87,6 @@ def search_results_filtered():
     else:
         sortby = filter.data['select']
         sortedresults = db.sort_request(sortby,results,-1)
-        #sortedresults = db.filter_by_stars(results, 3)
         return render_template('search_results.html', filterform = filter, results=sortedresults, result_count=result_count, page=page, per_page=per_page, pagination=pagination)
 
 #login

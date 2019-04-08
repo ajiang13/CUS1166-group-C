@@ -1,4 +1,5 @@
 import pymongo
+import json
 #Setup
 client = pymongo.MongoClient('localhost', 27017)
 db = client.yelp
@@ -70,22 +71,25 @@ def sort_request(request,results,reverse):
     else:
         return None
 
-#Finds the corresponding doc by id in pictures collection
-#Returns a new results with matching business_ids, but from pictures collection
+#Given results of a query,
+#will return a Dict of photo_id values and their
+#corresponding business_id keys
 def photo_results(results):
-    picture_results = []
-    for document in results:
-        if db.pictures.findOne(document.business_id):
-            picture_doc = db.pictures.findOne(document.business_id)
-            picture_results.append(picture_doc)
+    picture_results = {}
+    if results != None:
+        for document in results:
+            doc_id = document.get('business_id')
+            #picture_doc isn't the same type as document??
+            picture_doc = db.pictures.find_one({'business_id', doc_id})
+            picture_results[doc_id] = picture_doc.get('photo_id')
     return picture_results
 
-#Returns a single photo_id 
+#Returns a single photo_id
 def find_photo_url(document, results):
     pictures = photo_results(results)
     for pic in pictures:
-        if document.business_id == pic.business_id
-        return pic.photo_id
+        if document.business_id == pic.business_id:
+            return pic.photo_id
 
 #Returns a dictionary of picture file names for the passed results
 def find_photo_urls(results):
