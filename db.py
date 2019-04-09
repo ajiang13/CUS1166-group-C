@@ -4,7 +4,7 @@ import json
 client = pymongo.MongoClient('localhost', 27017)
 db = client.yelp
 collection = db.business
-collection2 = db.pictures
+collection2 = db.photos
 
 #Create index on name field
 #Must create index to be able to search text
@@ -72,31 +72,33 @@ def sort_request(request,results,reverse):
         return None
 
 #Given results of a query,
-#will return a Dict of photo_id values and their
-#corresponding business_id keys
-def photo_results(results):
-    picture_results = {}
+#will return an array of business_id strings
+def create_business_id_array(results):
+    business_ids = []
     if results != None:
         for document in results:
             doc_id = document.get('business_id')
-            #picture_doc isn't the same type as document??
-            #try just using pymongo api functions since we're dealing w cursor objects,
-            #it might help with avoiding problem on line 82
-            picture_doc = db.pictures.find_one({'business_id', doc_id})
-            picture_results[doc_id] = picture_doc.get('photo_id')
-    return picture_results
+            business_ids.append(doc_id)
+return business_ids
 
-#Returns a single photo_id
-def find_photo_url(document, results):
-    pictures = photo_results(results)
-    for pic in pictures:
-        if document.business_id == pic.business_id:
-            return pic.photo_id
-
-#Returns a dictionary of picture file names for the passed results
-def find_photo_urls(results):
-    pictures = photo_results(results)
-    picture_urls = {}
-    for picture in pictures:
-        picture_urls[picture.business_id] = picture.photo_id
-    return picture_urls
+#Will query the pictures collection using the array of
+#business_ids, then return a dictionary of business_ids
+#and their photo_id values
+def create_photo_id_dictionary(results):
+    photo_dict = {}
+    picture_results
+    business_ids = create_business_id_array(results)
+    #Queries the photos collection
+    photo_results = db.photos.find( { 'business_id' : { '$in' : business_ids} } )
+    for i in business_ids:
+        business_ids[i] = business_id
+        #Finds a photo document with the correct business_id
+        photo_doc = photo_results.find_one({'business_id', business_id})
+        photo_dict{business_id} = photo_id.get('photo_id')
+        
+        #Thumbnails should be pictures of the outside of a business
+        #if photo_doc.get('label') == 'outside':
+        #    photo_dict{business_id} = photo_id.get('photo_id')
+        #else:
+        #    photo_dict{business_id} = photo_id.get('photo_id')
+    return photo_dict

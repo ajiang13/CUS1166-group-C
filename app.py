@@ -45,6 +45,9 @@ def search_results(advanced_search, form, page):
         session['adv_search_categories'] = q4
         session['adv_search_stars'] = q5
         results, result_count = db.advanced_search(q1, q2, q3, q4, q5)
+
+        photo_dict = db.create_photo_id_dictionary(results)
+
         total = result_count
         page = request.args.get('page', '1')
         page = int(page)
@@ -56,7 +59,7 @@ def search_results(advanced_search, form, page):
         flash('No results found')
         return redirect('/search')
     else:
-        return render_template('search_results.html', form=form, filterform=filter, results=results, result_count=result_count, q1=q1, q2=q2, q3=q3, q4=q4, q5=q5, page=page, per_page=per_page, pagination=pagination)
+        return render_template('search_results.html', form=form, filterform=filter, results=results, result_count=result_count, photo_dict = photo_dict, q1=q1, q2=q2, q3=q3, q4=q4, q5=q5, page=page, per_page=per_page, pagination=pagination)
 
 @app.route("/search_results_filtered", methods=['GET', 'POST'])
 def search_results_filtered():
@@ -84,11 +87,11 @@ def search_results_filtered():
     if request.form.get('sortbutton') == "Sort Ascending":
         sortby = filter.data['select']
         sortedresults = db.sort_request(sortby,results,1)
-        return render_template('search_results.html', filterform = filter, results=sortedresults, result_count=result_count, page=page, per_page=per_page, pagination=pagination)
+        return render_template('search_results.html', filterform = filter, results=sortedresults, result_count=result_count, photo_dict = photo_dict, page=page, per_page=per_page, pagination=pagination)
     else:
         sortby = filter.data['select']
         sortedresults = db.sort_request(sortby,results,-1)
-        return render_template('search_results.html', filterform = filter, results=sortedresults, result_count=result_count, page=page, per_page=per_page, pagination=pagination)
+        return render_template('search_results.html', filterform = filter, results=sortedresults, result_count=result_count, photo_dict = photo_dict, page=page, per_page=per_page, pagination=pagination)
 
 @app.route('/new_restaurant', methods=['GET', 'POST'])
 def new_restaurant():

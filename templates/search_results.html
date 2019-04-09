@@ -32,7 +32,8 @@
 
       {% for document in results %}
       <tr>
-      <td>""</td>
+      {{photo_id = photo_dict.get(document.business_id)}}
+      <td><<img src="photos/{{photo_id}}" alt="">></td>
       <td>{{document.name}}</td>
       <td>{{document.address}}</td>
       <td>{{document.city}}</td>
