@@ -3,7 +3,6 @@
 from flask import Flask, render_template, url_for, request, redirect, flash, session
 import json
 import db
-from tables import Results
 from forms import SearchForm, AdvancedSearchForm, FilterForm, RestaurantForm
 from flask_bootstrap import Bootstrap
 from flask_paginate import Pagination, get_page_args
@@ -89,7 +88,6 @@ def search_results_filtered():
     else:
         sortby = filter.data['select']
         sortedresults = db.sort_request(sortby,results,-1)
-        #sortedresults = db.filter_by_stars(results, 3)
         return render_template('search_results.html', filterform = filter, results=sortedresults, result_count=result_count, page=page, per_page=per_page, pagination=pagination)
 
 @app.route('/new_restaurant', methods=['GET', 'POST'])

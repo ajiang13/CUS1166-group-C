@@ -80,6 +80,8 @@ def photo_results(results):
         for document in results:
             doc_id = document.get('business_id')
             #picture_doc isn't the same type as document??
+            #try just using pymongo api functions since we're dealing w cursor objects,
+            #it might help with avoiding problem on line 82
             picture_doc = db.pictures.find_one({'business_id', doc_id})
             picture_results[doc_id] = picture_doc.get('photo_id')
     return picture_results
