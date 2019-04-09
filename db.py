@@ -79,23 +79,22 @@ def create_business_id_array(results):
         for document in results:
             doc_id = document.get('business_id')
             business_ids.append(doc_id)
-return business_ids
+    return business_ids
 
 #Will query the pictures collection using the array of
 #business_ids, then return a dictionary of business_ids
 #and their photo_id values
 def create_photo_id_dictionary(results):
     photo_dict = {}
-    picture_results
     business_ids = create_business_id_array(results)
     #Queries the photos collection
     photo_results = db.photos.find( { 'business_id' : { '$in' : business_ids} } )
     for i in business_ids:
-        business_ids[i] = business_id
+        business_id = business_ids[i]
         #Finds a photo document with the correct business_id
         photo_doc = photo_results.find_one({'business_id', business_id})
-        photo_dict{business_id} = photo_id.get('photo_id')
-        
+        photo_dict[business_id] = photo_id.get('photo_id')
+
         #Thumbnails should be pictures of the outside of a business
         #if photo_doc.get('label') == 'outside':
         #    photo_dict{business_id} = photo_id.get('photo_id')
