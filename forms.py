@@ -22,6 +22,11 @@ class RegistrationForm(Form):
     ])
     confirm = PasswordField('Repeat Password')
 
+class DisplayForm(Form):
+    hours = StringField('Hours')
+    latitude = StringField('Latitude')
+    longitude = StringField('Longitude')
+
 class FilterForm(Form):
     choices = [('Name', 'Name'), ('City', 'City'), ('State', 'State'), ('Stars', 'Stars'), ('Reviews', 'Reviews')]
     select = SelectField('Sort by: ', choices = choices)

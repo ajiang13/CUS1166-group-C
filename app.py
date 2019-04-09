@@ -4,7 +4,7 @@ from flask import Flask, render_template, url_for, request, redirect, flash, ses
 import json
 import db
 from tables import Results
-from forms import SearchForm, AdvancedSearchForm, FilterForm, RestaurantForm
+from forms import SearchForm, AdvancedSearchForm, FilterForm, RestaurantForm, DisplayForm 
 from flask_bootstrap import Bootstrap
 from flask_paginate import Pagination, get_page_args
 
@@ -71,8 +71,7 @@ def search_results_filtered():
         q4 = session['adv_search_categories']
         q5 = session['adv_search_stars']
 
-        results, result_count = db.advanced_search(q1, q2, q3, q4, q5)
-        total = result_count
+        session['adv_search_name'] != ''
         page = request.args.get('page', '1')
         page = int(page)
         per_page = 20
@@ -92,11 +91,25 @@ def search_results_filtered():
         #sortedresults = db.filter_by_stars(results, 3)
         return render_template('search_results.html', filterform = filter, results=sortedresults, result_count=result_count, page=page, per_page=per_page, pagination=pagination)
 
-@app.route('/new_restaurant', methods=['GET', 'POST'])
+#Display
+@app.route("/display_info", methods=['GET', 'POST'])
+def display_info():
+    display = DisplayForm(request.form)
+
+    if  session['display_info_name'] != '' or session['display_info_hours'] != '' or session['display_info_latitude'] != '' or session['display_info_longitude'] != '':
+        d1 = session['display_info_name']
+        d2 = session['display_info_hours']
+        d3 = session['display_info_latitude']
+        d4 = session['display_info_longitude']
+
+    if request.form.get('displaybutton') == "Display Info":
+        displayby = filter.data['select']
+        displayedresults = db.display_info(displayby,results,1)
+        return render_template('display_info.html', displayform = display, results=displayedresults, result_count=result_count)
+
+
+@app.route("/new_restaurant", methods=['GET', 'POST'])
 def new_restaurant():
-    """
-    Add a new restaurant
-    """
     form = RestaurantForm(request.form)
     if request.method == 'POST' and form.validate():
         # save the restaurant
@@ -106,8 +119,20 @@ def new_restaurant():
         return redirect('/')
     return render_template('new_restaurant.html', form=form)
 
+    def submit(restaurant, form, new=False):
+        restaurant = Restaurant()
+        restaurant.name = form.restaurant.data
+        restaurant.name = name
+        restaurant.city = form.city.data
+        restaurant.state = form.state.data
+        restaurant.is_open = form.is_open.data
+
+    if new:
+        db_session.add(restaurant)
+        db_session.commit()
+
 #Edit
-@app.route('/item/<int:id>', methods=['GET', 'POST'])
+@app.route("/item/<int:id>", methods=['GET', 'POST'])
 def edit(id):
 
     qry = db.query(Restaurant).filter(Restaurant).id==id

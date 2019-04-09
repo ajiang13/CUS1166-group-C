@@ -24,6 +24,20 @@ def advanced_search(q1, q2, q3, q4, q5):
     result_count = db.business.count_documents(search_string)
     return results, result_count
 
+def display_info(d1, d2 , d3):
+    display_string = {}
+    if d1 != '':
+        display_string.update({'$text': {'$search': d1}})
+    if d2 != '':
+        display_string.update({'hours': {'$regex': d2, '$options': 'i'}})
+    if d3 != '':
+        display_string.update({'latitude': {'$regex': d3, '$options': 'i'}})
+    if q4 != '':
+        display_string.update({'longitude': {'$regex': d4, '$options': 'i'}})
+    results = db.business.find(display_string)
+    result_count = db.business.display_documents(display_string)
+    return results, result_count
+
 #Funtions for sorting results
 def sort_by_name(results,reverse):
     if (reverse == True):
