@@ -73,7 +73,7 @@ def sort_request(request,results,reverse):
 
 #Given results of a query,
 #will return a dictionary of business_id strings and index keys
-def create_business_id_dict(results):
+def create_business_id_list(results):
     business_ids = []
     if results != None:
         for document in results:
@@ -86,21 +86,27 @@ def create_business_id_dict(results):
 #and their photo_id values
 def create_photo_id_dictionary(results):
     photo_dict = {}
-    business_ids = create_business_id_dict(results)
+    business_ids = create_business_id_list(results)
     #Queries the photos collection
     photo_results = db.photos.find( { 'business_id' : { '$in' : business_ids} } )
+    #pymongo.errors.InvalidOperation: cannot set options after executing query
+
     #Convert cursor into a list of dictionaries(or Documents)
     photos = list(photo_results)
     for business_id in business_ids:
+        # photo = db.photos.find_one({'business_id': business_id}) #NoneType error
+        # photo_id = photo.get('photo_id')
+        # photo_dict[business_id] = photo_id
+
         #For each business_id, will check if photos list
         #contains a document with the same business_id value
         for photo in photos:
-            if photo.get("business_id") == business_id:
+            if photo.get('business_id') == business_id:
                 photo_dict[business_id] = photo.get('photo_id')
 
         #Thumbnails should be pictures of the outside of a business
-        #if photo_doc.get('label') == 'outside':
-        #    photo_dict{business_id} = photo_id.get('photo_id')
+        #if photo.get('label') == 'outside':
+        #    photo_dict[business_id] = photo_id.get('photo_id')
         #else:
-        #    photo_dict{business_id} = photo_id.get('photo_id')
+        #    photo_dict[business_id] = photo_id.get('photo_id')
     return photo_dict
