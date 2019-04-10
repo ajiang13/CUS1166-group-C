@@ -1,14 +1,14 @@
-#Imports
-import os
-import json
+# Imports
 from werkzeug.utils import secure_filename
 
 from config import Config
-from flask import Flask, render_template, url_for, request, redirect, flash, session, jsonify
+from flask import (Flask, render_template, url_for, request, redirect, flash,
+                   session, jsonify)
 from flask_bootstrap import Bootstrap
 from flask_mail import Mail, Message
 from flask_paginate import Pagination, get_page_args
-from forms import SearchForm, AdvancedSearchForm, FilterForm, RestaurantForm, MailForm
+from forms import (AdvancedSearchForm, FilterForm, RestaurantForm, MailForm,
+                   DisplayForm)
 import db
 
 # Create an instance of Flask class
@@ -18,12 +18,14 @@ bootstrap = Bootstrap(app)
 mail = Mail(app)
 app.secret_key = "key"
 
-#Routes
+
+# Routes
 @app.route("/")
 def index():
     return render_template('index.html')
 
-#Search
+
+# Search
 @app.route("/search", methods=['GET', 'POST'])
 def search():
     advanced_search = AdvancedSearchForm()
@@ -33,19 +35,23 @@ def search():
         return search_results(advanced_search, form=advanced_search, page=page)
     return render_template('search.html', form=advanced_search)
 
+
 @app.route("/search_results/page/<int:page>", methods=['GET', 'POST'])
 @app.route("/search_results", defaults={'page': 1}, methods=['GET', 'POST'])
 def search_results(advanced_search, form, page):
     results = []
     filter = FilterForm()
     mailform = MailForm()
-    if advanced_search.data['name'] != '' or advanced_search.data['city'] != '' or advanced_search.data['state'] != '' or advanced_search.data['categories'] != '' or advanced_search.data['stars'] != '':
+    if (advanced_search.data['name'] != '' or advanced_search.data['city']
+        != '' or advanced_search.data['state'] != ''
+        or advanced_search.data['categories'] != ''
+            or advanced_search.data['stars'] != ''):
         q1 = advanced_search.data['name']
         q2 = advanced_search.data['city']
         q3 = advanced_search.data['state']
         q4 = advanced_search.data['categories']
         q5 = advanced_search.data['stars']
-        #Creating sessions to pass into search_results_filtered
+        # Creating sessions to pass into search_results_filtered
         session['adv_search_name'] = q1
         session['adv_search_city'] = q2
         session['adv_search_state'] = q3
@@ -97,13 +103,18 @@ def search_results(advanced_search, form, page):
             q1=q1, q2=q2, q3=q3, q4=q4, q5=q5, page=page, per_page=per_page,
             pagination=pagination, results_for_render=results_for_render)
 
+
 @app.route("/search_results_filtered/page/<int:page>", methods=['GET', 'POST'])
-@app.route("/search_results_filtered", defaults={'page': 1}, methods=['GET', 'POST'])
+@app.route("/search_results_filtered", defaults={'page': 1},
+           methods=['GET', 'POST'])
 def search_results_filtered(page):
     results = []
     filter = FilterForm()
     mailform = MailForm()
-    if session['adv_search_name'] != '' or session['adv_search_city'] != '' or session['adv_search_state'] != '' or session['adv_search_categories'] != '' or session['adv_search_stars'] != '':
+    if (session['adv_search_name'] != '' or session['adv_search_city'] != ''
+        or session['adv_search_state'] != ''
+        or session['adv_search_categories'] != ''
+            or session['adv_search_stars'] != ''):
         q1 = session['adv_search_name']
         q2 = session['adv_search_city']
         q3 = session['adv_search_state']
@@ -136,27 +147,46 @@ def search_results_filtered(page):
         return redirect('/search')
     if request.form.get('sortbutton') == 'Sort Ascending':
         sortby = filter.data['select']
-        sortedresults = db.sort_request(sortby,results,1)
+        sortedresults = db.sort_request(sortby, results, 1)
         return render_template(
-            'search_results.html', filterform = filter, mailform=mailform,
+            'search_results.html', filterform=filter, mailform=mailform,
             results=sortedresults, result_count=result_count,
             results_for_render=results_for_render, page=page,
             per_page=per_page, pagination=pagination)
     elif request.form.get('sortbutton') == 'Sort Descending':
         sortby = filter.data['select']
-        sortedresults = db.sort_request(sortby,results,-1)
+        sortedresults = db.sort_request(sortby, results, -1)
         #sortedresults = db.filter_by_stars(results, 3)
         return render_template(
-            'search_results.html', filterform = filter, mailform=mailform,
+            'search_results.html', filterform=filter, mailform=mailform,
             results=sortedresults, result_count=result_count,
             results_for_render=results_for_render, page=page,
             per_page=per_page, pagination=pagination)
 
-@app.route('/new_restaurant', methods=['GET', 'POST'])
+
+# Display
+@app.route("/display_info", methods=['GET', 'POST'])
+def display_info():
+    display = DisplayForm(request.form)
+
+    if (session['display_info_name'] != '' or session['display_info_hours']
+        != '' or session['display_info_latitude'] != ''
+            or session['display_info_longitude'] != ''):
+        d1 = session['display_info_name']
+        d2 = session['display_info_hours']
+        d3 = session['display_info_latitude']
+        d4 = session['display_info_longitude']
+
+    if request.form.get('displaybutton') == "Display Info":
+        displayby = display.data['select']
+        displayedresults = db.display_info(displayby, results, 1)
+        return render_template(
+            'display_info.html', displayform=display, results=displayedresults,
+            result_count=result_count)
+
+
+@app.route("/new_restaurant", methods=['GET', 'POST'])
 def new_restaurant():
-    """
-    Add a new restaurant
-    """
     form = RestaurantForm()
     if request.method == 'POST' and form.validate():
         # save the restaurant
@@ -166,8 +196,21 @@ def new_restaurant():
         return redirect('/')
     return render_template('new_restaurant.html', form=form)
 
-#Edit
-@app.route('/item/<int:id>', methods=['GET', 'POST'])
+    def submit(restaurant, form, new=False):
+        restaurant = Restaurant()
+        restaurant.name = form.restaurant.data
+        restaurant.name = name
+        restaurant.city = form.city.data
+        restaurant.state = form.state.data
+        restaurant.is_open = form.is_open.data
+
+    if new:
+        db_session.add(restaurant)
+        db_session.commit()
+
+
+# Edit
+@app.route("/item/<int:id>", methods=['GET', 'POST'])
 def edit(id):
 
     qry = db.query(Restaurant).filter(Restaurant).id==id
@@ -184,20 +227,24 @@ def edit(id):
     else:
         return 'Error loading #{id}'.format(id=id)
 
-#login
+
+# login
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     error = None
     if request.method == 'POST':
-        if request.form['username'] != 'admin' or request.form['password'] != 'admin':
-            error = 'Invalid Credentials. Please Try Again.'
+        if (request.form['username'] != 'admin' or request.form['password']
+                != 'admin'):
+                error = 'Invalid Credentials. Please Try Again.'
         else:
             return redirect('/')
     return render_template('login.html', error=error)
 
+
 @app.route("/sent")
 def sent():
     return render_template('sent.html')
+
 
 if __name__ == "__main__":
     app.run(debug=True, host='127.0.0.1', port=5110)

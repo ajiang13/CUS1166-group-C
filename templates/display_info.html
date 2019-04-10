@@ -1,0 +1,35 @@
+{% extends 'layout.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block title %}Displayed info{% endblock %}
+{% block app_content %}
+    <h1>Display_Info</h1>
+
+    <form name='display' value='display' method='post' role='form' action='display_info'>
+      {{ displayform.csfr }}
+      <div style='width: 25%' class='form-control'>
+      {{ wtf.form_field(displayform.select) }}
+      </div>
+      <br>
+      <br>
+      <div>
+         <button type='submit' class='btn' name='displaybutton' value='Display Info'>Display Info</button>
+      </div>
+    </form>
+
+    <table class="table table-hover">
+    <th><strong>Hours</strong></th>
+    <th><strong>Latitude</strong></th>
+    <th><strong>Longitude</strong></th>
+
+    {% for document in results %}
+    <tr>
+    <td>{{ loop.index + (page - 1) * per_page }}</td>
+    <td>{{document.hours}}</td>
+    <td>{{document.latitude}}</td>
+    <td>{{document.longitude}}</td>
+    </tr>
+    {% endfor %}
+    </table>
+    {{ pagination.links }}
+{% endblock %}
