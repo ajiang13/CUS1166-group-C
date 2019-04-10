@@ -31,8 +31,8 @@
     <th><strong>Categories</strong></th>
 
       {% for document in results %}
-      <tr>
       {{photo_id = photo_dict.get(document.business_id)}}
+      <tr>
       <td><<img src="photos/{{photo_id}}" alt="">></td>
       <td>{{document.name}}</td>
       <td>{{document.address}}</td>

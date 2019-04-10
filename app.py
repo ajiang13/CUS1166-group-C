@@ -46,6 +46,8 @@ def search_results(advanced_search, form, page):
         session['adv_search_stars'] = q5
         results, result_count = db.advanced_search(q1, q2, q3, q4, q5)
 
+        #Creating a dictionary with business_id as the key
+        #and photo_id as the value
         photo_dict = db.create_photo_id_dictionary(results)
 
         total = result_count

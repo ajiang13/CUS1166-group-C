@@ -72,13 +72,13 @@ def sort_request(request,results,reverse):
         return None
 
 #Given results of a query,
-#will return an array of business_id strings
-def create_business_id_array(results):
+#will return a dictionary of business_id strings and index keys
+def create_business_id_dict(results):
     business_ids = []
     if results != None:
         for document in results:
-            doc_id = document.get('business_id')
-            business_ids.append(doc_id)
+            business_id = document.get('business_id')
+            business_ids.append(business_id)
     return business_ids
 
 #Will query the pictures collection using the array of
@@ -86,14 +86,17 @@ def create_business_id_array(results):
 #and their photo_id values
 def create_photo_id_dictionary(results):
     photo_dict = {}
-    business_ids = create_business_id_array(results)
+    business_ids = create_business_id_dict(results)
     #Queries the photos collection
     photo_results = db.photos.find( { 'business_id' : { '$in' : business_ids} } )
-    for i in business_ids:
-        business_id = business_ids[i]
-        #Finds a photo document with the correct business_id
-        photo_doc = photo_results.find_one({'business_id', business_id})
-        photo_dict[business_id] = photo_id.get('photo_id')
+    #Convert cursor into a list of dictionaries(or Documents)
+    photos = list(photo_results)
+    for business_id in business_ids:
+        #For each business_id, will check if photos list
+        #contains a document with the same business_id value
+        for photo in photos:
+            if photo.get("business_id") == business_id:
+                photo_dict[business_id] = photo.get('photo_id')
 
         #Thumbnails should be pictures of the outside of a business
         #if photo_doc.get('label') == 'outside':
