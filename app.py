@@ -4,7 +4,7 @@ from flask import Flask, render_template, url_for, request, redirect, flash, ses
 import json
 import db
 from tables import Results
-from forms import SearchForm, AdvancedSearchForm, FilterForm, RestaurantForm, DisplayForm 
+from forms import SearchForm, AdvancedSearchForm, FilterForm, RestaurantForm, DisplayForm
 from flask_bootstrap import Bootstrap
 from flask_paginate import Pagination, get_page_args
 
@@ -103,7 +103,7 @@ def display_info():
         d4 = session['display_info_longitude']
 
     if request.form.get('displaybutton') == "Display Info":
-        displayby = filter.data['select']
+        displayby = display.data['select']
         displayedresults = db.display_info(displayby,results,1)
         return render_template('display_info.html', displayform = display, results=displayedresults, result_count=result_count)
 
