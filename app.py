@@ -1,16 +1,21 @@
-
 #Imports
-from flask import Flask, render_template, url_for, request, redirect, flash, session
+import os
 import json
-import db
-from tables import Results
-from forms import SearchForm, AdvancedSearchForm, FilterForm, RestaurantForm
+from werkzeug.utils import secure_filename
+
+from config import Config
+from flask import Flask, render_template, url_for, request, redirect, flash, session, jsonify
 from flask_bootstrap import Bootstrap
+from flask_mail import Mail, Message
 from flask_paginate import Pagination, get_page_args
+from forms import SearchForm, AdvancedSearchForm, FilterForm, RestaurantForm, MailForm
+import db
 
 # Create an instance of Flask class
 app = Flask(__name__, template_folder='templates')
+app.config.from_object(Config)
 bootstrap = Bootstrap(app)
+mail = Mail(app)
 app.secret_key = "key"
 
 #Routes
@@ -21,7 +26,7 @@ def index():
 #Search
 @app.route("/search", methods=['GET', 'POST'])
 def search():
-    advanced_search = AdvancedSearchForm(request.form)
+    advanced_search = AdvancedSearchForm()
     page = request.args.get('page', '1')
     page = int(page)
     if request.method == 'POST':
@@ -32,7 +37,8 @@ def search():
 @app.route("/search_results", defaults={'page': 1}, methods=['GET', 'POST'])
 def search_results(advanced_search, form, page):
     results = []
-    filter = FilterForm(request.form)
+    filter = FilterForm()
+    mailform = MailForm()
     if advanced_search.data['name'] != '' or advanced_search.data['city'] != '' or advanced_search.data['state'] != '' or advanced_search.data['categories'] != '' or advanced_search.data['stars'] != '':
         q1 = advanced_search.data['name']
         q2 = advanced_search.data['city']
@@ -52,25 +58,57 @@ def search_results(advanced_search, form, page):
         per_page = 20
         offset = (page - 1) * per_page
         results_for_render = results.skip(offset).limit(per_page)
-        pagination = Pagination(page=page, per_page=per_page, offset=offset, total=total, format_total=True, format_number=True, css_framework='bootstrap4')
+        pagination = Pagination(
+                    page=page,
+                    per_page=per_page,
+                    offset=offset,
+                    total=total,
+                    format_total=True,
+                    format_number=True,
+                    css_framework='bootstrap4')
+        if mailform.validate_on_submit():
+            #checked_results = request.form.to_dict(flat=False)
+            #checked_results = {}
+            #for key in checked_data.keys():
+            #    for value in checked_data.getlist(key):
+            #        checked_results.update(checked_data)
+            checked_results = request.form.getlist('selected_documents')
+            #checked_results = []
+            #for document in results_list:
+            #    checked_results.append({document})
+            msg = Message(
+                'Mail from CUS1166 Group C',
+                recipients=[mailform.recipients.data])
+            msg.body = mailform.body.data
+            body = msg.body
+            msg.html = render_template('email.html', checked_results=checked_results, body=body)
+            mail.send(msg)
+            #print(checked_results)
+            #for document in checked_results:
+            #    print(document.name)
+            return redirect('/sent')
     if not results:
         flash('No results found')
         return redirect('/search')
     else:
-        return render_template('search_results.html', form=form, filterform=filter, results=results, result_count=result_count, q1=q1, q2=q2, q3=q3, q4=q4, q5=q5, page=page, per_page=per_page, pagination=pagination)
+        return render_template(
+            'search_results.html', form=form, filterform=filter,
+            mailform=mailform, results=results, result_count=result_count,
+            q1=q1, q2=q2, q3=q3, q4=q4, q5=q5, page=page, per_page=per_page,
+            pagination=pagination, results_for_render=results_for_render)
 
-@app.route("/search_results_filtered", methods=['GET', 'POST'])
-def search_results_filtered():
+@app.route("/search_results_filtered/page/<int:page>", methods=['GET', 'POST'])
+@app.route("/search_results_filtered", defaults={'page': 1}, methods=['GET', 'POST'])
+def search_results_filtered(page):
     results = []
-    filter = FilterForm(request.form)
-
+    filter = FilterForm()
+    mailform = MailForm()
     if session['adv_search_name'] != '' or session['adv_search_city'] != '' or session['adv_search_state'] != '' or session['adv_search_categories'] != '' or session['adv_search_stars'] != '':
         q1 = session['adv_search_name']
         q2 = session['adv_search_city']
         q3 = session['adv_search_state']
         q4 = session['adv_search_categories']
         q5 = session['adv_search_stars']
-
         results, result_count = db.advanced_search(q1, q2, q3, q4, q5)
         total = result_count
         page = request.args.get('page', '1')
@@ -78,26 +116,48 @@ def search_results_filtered():
         per_page = 20
         offset = (page - 1) * per_page
         results_for_render = results.skip(offset).limit(per_page)
-        pagination = Pagination(page=page, per_page=per_page, offset=offset, total=total, format_total=True, format_number=True, css_framework='bootstrap4')
+        pagination = Pagination(
+                    page=page,
+                    per_page=per_page,
+                    offset=offset,
+                    total=total,
+                    format_total=True,
+                    format_number=True,
+                    css_framework='bootstrap4')
+        if mailform.validate_on_submit():
+            msg = Message(
+                'Mail from CUS1166 Group C',
+                recipients=[form.recipients.data])
+            msg.body = form.body.data
+            mail.send(msg)
+            return redirect('/sent')
     if not results:
         flash('No results found')
         return redirect('/search')
-    if request.form.get('sortbutton') == "Sort Ascending":
+    if request.form.get('sortbutton') == 'Sort Ascending':
         sortby = filter.data['select']
         sortedresults = db.sort_request(sortby,results,1)
-        return render_template('search_results.html', filterform = filter, results=sortedresults, result_count=result_count, page=page, per_page=per_page, pagination=pagination)
-    else:
+        return render_template(
+            'search_results.html', filterform = filter, mailform=mailform,
+            results=sortedresults, result_count=result_count,
+            results_for_render=results_for_render, page=page,
+            per_page=per_page, pagination=pagination)
+    elif request.form.get('sortbutton') == 'Sort Descending':
         sortby = filter.data['select']
         sortedresults = db.sort_request(sortby,results,-1)
         #sortedresults = db.filter_by_stars(results, 3)
-        return render_template('search_results.html', filterform = filter, results=sortedresults, result_count=result_count, page=page, per_page=per_page, pagination=pagination)
+        return render_template(
+            'search_results.html', filterform = filter, mailform=mailform,
+            results=sortedresults, result_count=result_count,
+            results_for_render=results_for_render, page=page,
+            per_page=per_page, pagination=pagination)
 
 @app.route('/new_restaurant', methods=['GET', 'POST'])
 def new_restaurant():
     """
     Add a new restaurant
     """
-    form = RestaurantForm(request.form)
+    form = RestaurantForm()
     if request.method == 'POST' and form.validate():
         # save the restaurant
         restaurant = Restaurant()
@@ -134,6 +194,10 @@ def login():
         else:
             return redirect('/')
     return render_template('login.html', error=error)
+
+@app.route("/sent")
+def sent():
+    return render_template('sent.html')
 
 if __name__ == "__main__":
     app.run(debug=True, host='127.0.0.1', port=5110)
