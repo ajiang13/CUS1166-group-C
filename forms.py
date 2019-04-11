@@ -34,6 +34,17 @@ class RegistrationForm(FlaskForm):
     confirm = PasswordField('Confirm Password')
 
 
+class LoginForm(FlaskForm):
+    username = StringField(
+              'username',
+              [validators.DataRequired(),
+               validators.Length(min=1, max=100)])
+    password = PasswordField(
+              'password',
+              [validators.DataRequired(),
+               validators.Length(min=1, max=100)])
+
+
 class FilterForm(FlaskForm):
     choices = [('Name', 'Name'),
                ('City', 'City'),
