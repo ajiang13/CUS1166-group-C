@@ -1,0 +1,5 @@
+UCSp4 Photo Viewer/Thumbnails
+Actors: User, System
+Description: After a search, user will see thumbnails for each search result.
+             Users can also click on a result to see all photos of that business.
+Examples: Search for pizza. Then click on a specific pizzeria to see their yelp photos

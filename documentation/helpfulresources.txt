@@ -1,0 +1,6 @@
+
+Pymongo help
+http://api.mongodb.com/python/current/tutorial.html
+
+For creating diagrams
+https://www.lucidchart.com
