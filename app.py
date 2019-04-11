@@ -87,9 +87,15 @@ def search_results(advanced_search, form, page):
                 recipients=[mailform.recipients.data])
             msg.body = mailform.body.data
             body = msg.body
-            msg.html = render_template('email.html', checked_results=checked_results, body=body)
+            msg.html = render_template(
+                      'email.html',
+                      checked_results=checked_results,
+                      body=body)
             mail.send(msg)
-            #print(checked_results)
+            #print(results)
+            #for keys in results:
+            #    print(keys.values)
+            print(checked_results)
             #for document in checked_results:
             #    print(document.name)
             return redirect('/sent')
@@ -213,7 +219,7 @@ def new_restaurant():
 @app.route("/item/<int:id>", methods=['GET', 'POST'])
 def edit(id):
 
-    qry = db.query(Restaurant).filter(Restaurant).id==id
+    qry = db.query(Restaurant).filter(Restaurant).id == id
     restaurant = qry.first()
 
     if restaurant:
