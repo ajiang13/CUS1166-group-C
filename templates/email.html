@@ -1,0 +1,34 @@
+{% extends 'layout.html' %}
+
+{% block title %}Mailed results{% endblock %}
+{% block navbar %}
+{% endblock %}
+{% block app_content %}
+    {{ body }}
+    <h4>Mailed Results</h4>
+
+    <table class="table table-hover">
+      <th><strong>Name</strong></th>
+      <th><strong>Address</strong></th>
+      <th><strong>City</strong></th>
+      <th><strong>State/Province</strong></th>
+      <th><strong>Zip Code</strong></th>
+      <th><strong>Stars</strong></th>
+      <th><strong>Review Count</strong></th>
+      <th><strong>Categories</strong></th>
+
+      {% for document in checked_results %}
+      <tr>
+      <td>{{ document.name }}</td>
+      <td>{{ document.address }}</td>
+      <td>{{ document.city }}</td>
+      <td>{{ document.state }}</td>
+      <td>{{ document.postal_code }}</td>
+      <td>{{ document.stars }}</td>
+      <td>{{ document.review_count }}</td>
+      <td>{{ document.categories }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+    <p>{{ checked_results }}</p>
+{% endblock %}

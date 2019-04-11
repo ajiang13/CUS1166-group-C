@@ -16,5 +16,5 @@ Import data from .json files:
 
 5. Open command prompt (not Mongo Shell) and change directory to MongoDB installation e.g. `cd C:\Program Files\MongoDB\Server\4.0\bin`
 6. Enter `mongoimport --db yelp --collection business --file <path to business.json>` and again for the photo collection.
-  
-If successful, the business collection should have 192.6k documents and photo 242.8k documents.
+
+If successful, the business collection should have 192.6k documents and 200.0k photo documents.

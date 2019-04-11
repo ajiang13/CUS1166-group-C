@@ -1,4 +1,4 @@
 UC3 Filter
 Actors: User, System
-Description: After a search, user can choose how they want the table to be sorted through a dropdown menu. They will also be able to exclude results that are below the desired rating. The system will display the new sorted and filtered table in a template.
+Description: After a search, user can choose how they want the table to be sorted through a dropdown menu. They will also be able to exclude results that are below the desired rating. The system will display the new sorted table in a new route.
 Examples: Search for pizza. Then sort by state, exclude restaurants that fall below a 3 star rating.
