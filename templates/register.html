@@ -1,0 +1,35 @@
+{% extends 'layout.html' %}
+{% block title %}Register{% endblock %}
+{% block app_content %}
+    <div class="container">
+      <h1>Register</h1>
+      <br>
+      <form action="" method="post">
+
+        <label for='name'>Name</label>
+        <input type="text" class='form-control' placeholder="Name" name="name" value="{{
+          request.form.name }}">
+
+        <label for='name'>Username</label>
+        <input type="text" class='form-control' placeholder="Username" name="username" value="{{
+          request.form.username }}">
+
+        <label for='name'>Email</label>
+        <input type="text" class='form-control' placeholder="example123@cus1166.com" name="email" value="{{
+            request.form.email }}">
+
+        <label for='name'>Password</label>
+        <input type="password" class='form-control' placeholder="Password" name="password" value="{{
+             request.form.password }}">
+
+        <label for='name'>Confirm Password</label>
+        <input type="password" class='form-control' placeholder="Confirm Password" name="confirm" value="{{
+             request.form.confirm }}">
+             
+        <input class="btn btn-default" type="submit" value="Submit">
+      </form>
+        {% if error %}
+       <p class="error"><strong>Error:</strong> {{ error }}
+     {% endif %}
+    </div>
+{% endblock %}

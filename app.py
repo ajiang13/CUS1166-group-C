@@ -8,7 +8,7 @@ from flask_bootstrap import Bootstrap
 from flask_mail import Mail, Message
 from flask_paginate import Pagination, get_page_args
 from forms import (AdvancedSearchForm, FilterForm, RestaurantForm, MailForm,
-                   DisplayForm)
+                   DisplayForm, RegistrationForm)
 import db
 
 # Create an instance of Flask class
@@ -239,6 +239,14 @@ def login():
         else:
             return redirect('/')
     return render_template('login.html', error=error)
+
+
+@app.route("/register", methods=['GET', 'POST'])
+def register():
+    form = RegistrationForm()
+    if request.method == 'POST' and form.validate():
+        return render_template('index.html')
+    return render_template('register.html', form=form)
 
 
 @app.route("/sent")
