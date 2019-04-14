@@ -6,11 +6,14 @@ from tables import Results
 from forms import SearchForm, AdvancedSearchForm, FilterForm, RestaurantForm, RegistrationForm
 from flask_bootstrap import Bootstrap
 from flask_paginate import Pagination, get_page_args
+from flask_sqlalchemy import SQLAlchemy
 
 # Create an instance of Flask class
 app = Flask(__name__, template_folder='templates')
 bootstrap = Bootstrap(app)
 app.secret_key = "key"
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////Users/rsmal188/Documents/CUS1166-group-c-dev-small/database.db'
+db = SQLAlchemy(app)
 
 #Routes
 @app.route("/")
