@@ -136,29 +136,32 @@ def edit(id):
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    form = LoginForm()
-
-    if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
-        if user:
-            if check_password_hash(user.password, form.password.data):
-                login_user(user, remember=form.remember.data)
-
-                return redirect('/')
-    return render_template('login.html', form=form)
+    if request.method == 'GET':
+        return render_template('login.html')
+    username = request.form['username']
+    password = request.form['password']
+    registered_user = User.query.filter_by(username=username,password=password).first()
+    if registered_user is None:
+        flash('Username or Password is invalid' , 'error')
+        return redirect(url_for('login'))
+    login_user(registered_user)
+    flash('Logged in successfully')
+    return redirect(request.args.get('next') or url_for('index'))
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    form = RegistrationForm()
+    if request.method == 'GET':
+        return render_template(register.html)
 
-    if form.validate_on_submit():
-        hashed_password = generate_password_hash(form.password.data, method='sha256')
-        new_user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+    user = User (request.form['name'],request.form['username'] ,
+    request.form['email'], request.form['password'], request.form['confirm'])
+
         db.session.add(new_user)
         db.session.commit()
 
         flash('New User Created!')
+        return redirect('/login')
 
     return render_template('register.html', form=form)
 
