@@ -2,11 +2,14 @@
 from flask import Flask, render_template, url_for, request, redirect, flash, session
 import json
 import db
+import sqlite3
 from tables import Results
-from forms import SearchForm, AdvancedSearchForm, FilterForm, RestaurantForm, RegistrationForm
+from forms import SearchForm, AdvancedSearchForm, FilterForm, RestaurantForm, RegistrationForm, LoginForm
 from flask_bootstrap import Bootstrap
 from flask_paginate import Pagination, get_page_args
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import login_user
 
 # Create an instance of Flask class
 app = Flask(__name__, template_folder='templates')
@@ -14,6 +17,13 @@ bootstrap = Bootstrap(app)
 app.secret_key = "key"
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////Users/rsmal188/Documents/CUS1166-group-c-dev-small/database.db'
 db = SQLAlchemy(app)
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String(100), nullable=False)
+    username = db. Column(db.String(120), unique=True, nullable=False)
+    email = db. Column(db.String(60), unique=True, nullable=False)
+    password = db. Column(db.String(60), nullable=False)
 
 #Routes
 @app.route("/")
@@ -57,8 +67,8 @@ def search_results(advanced_search, form, page):
         flash('No results found')
         return redirect('/search')
     else:
-        return render_template('search_results.html', form=form, filterform=filter, results=results, result_count=result_count, q1=q1, q2=q2, q3=q3, q4=q4, q5=q5, page=page, per_page=per_page, pagination=pagination)    
-    
+        return render_template('search_results.html', form=form, filterform=filter, results=results, result_count=result_count, q1=q1, q2=q2, q3=q3, q4=q4, q5=q5, page=page, per_page=per_page, pagination=pagination)
+
 @app.route("/search_results_filtered", methods=['GET', 'POST'])
 def search_results_filtered():
     results = []
@@ -90,7 +100,7 @@ def search_results_filtered():
         sortby = filter.data['select']
         sortedresults = db.sort_request(sortby,results,-1)
         #sortedresults = db.filter_by_stars(results, 3)
-        return render_template('search_results.html', filterform = filter, results=sortedresults, result_count=result_count, page=page, per_page=per_page, pagination=pagination)    
+        return render_template('search_results.html', filterform = filter, results=sortedresults, result_count=result_count, page=page, per_page=per_page, pagination=pagination)
 
 @app.route('/new_restaurant', methods=['GET', 'POST'])
 def new_restaurant():
@@ -104,8 +114,8 @@ def new_restaurant():
         save_changes(restaurant, form, new=True)
         flash('Restaurant created successfully!')
         return redirect('/')
-    return render_template('new_restaurant.html', form=form)    
-    
+    return render_template('new_restaurant.html', form=form)
+
 #Edit
 @app.route('/item/<int:id>', methods=['GET', 'POST'])
 def edit(id):
@@ -123,23 +133,34 @@ def edit(id):
         return render_template('edit_restaurant.html', form=form)
     else:
         return 'Error loading #{id}'.format(id=id)
-    
-@app.route("/login", methods=['GET', 'POST'])
-def login():
-    error = None
-    if request.method == 'POST':
-        if request.form['username'] != 'admin' or request.form['password'] != 'admin':
-            error = 'Invalid Credentials. Please Try Again.'
-        else:
-            return redirect('/')
-    return render_template('login.html', error=error)
 
-@app.route("/register", methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user:
+            if check_password_hash(user.password, form.password.data):
+                login_user(user, remember=form.remember.data)
+
+                return redirect('/')
+    return render_template('login.html', form=form)
+
+
+@app.route('/register', methods=['GET', 'POST'])
 def register():
-    form = RegistrationForm(request.form)
-    if request.method == 'POST' and form.validate():
-        return render_template('index.html')
+    form = RegistrationForm()
+
+    if form.validate_on_submit():
+        hashed_password = generate_password_hash(form.password.data, method='sha256')
+        new_user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
+
+        flash('New User Created!')
+
     return render_template('register.html', form=form)
-    
+
 if __name__ == "__main__":
     app.run(debug=True, host='127.0.0.1', port=5110)
