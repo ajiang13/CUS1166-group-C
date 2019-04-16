@@ -9,8 +9,9 @@
 
   <form name='filter' value='filter' method='post' role='form' action='search_results_filtered'>
     {{ filterform.csfr }}
-    <div style='width: 15%' class='form-control'>
-    {{ wtf.form_field(filterform.select) }}
+    <div style='width: 10%' class='form-control'>
+    <p>Sort by:</p>
+    {{ filterform.select }}
     </div>
     <br>
     <br>
@@ -19,30 +20,48 @@
        <button type='submit' class='btn' name='sortbutton' value='Sort Descending'>Sort Descending</button>
     </div>
   </form>
+  <form action='' name='mail' value='mail' method='post' role='form'>
     <table class="table table-hover">
-    <th><strong>Index</strong></th>
-    <th><strong>Name</strong></th>
-    <th><strong>Address</strong></th>
-    <th><strong>City</strong></th>
-    <th><strong>State/Province</strong></th>
-    <th><strong>Zip Code</strong></th>
-    <th><strong>Stars</strong></th>
-    <th><strong>Review Count</strong></th>
-    <th><strong>Categories</strong></th>
+      <th><strong>Select</strong></th>
+      {# <th><strong>Thumbnail</strong></th> #}
+      <th><strong>Name</strong></th>
+      <th><strong>Address</strong></th>
+      <th><strong>City</strong></th>
+      <th><strong>State/Province</strong></th>
+      <th><strong>Zip Code</strong></th>
+      <th><strong>Stars</strong></th>
+      <th><strong>Review Count</strong></th>
+      <th><strong>Categories</strong></th>
 
       {% for document in results %}
+      {# {{photo_id = photo_dict.get(document.business_id) #}
       <tr>
-      <td>{{ loop.index + (page - 1) * per_page }}</td>
-      <td>{{document.name}}</td>
-      <td>{{document.address}}</td>
-      <td>{{document.city}}</td>
-      <td>{{document.state}}</td>
-      <td>{{document.postal_code}}</td>
-      <td>{{document.stars}}</td>
-      <td>{{document.review_count}}</td>
-      <td>{{document.categories}}</td>
+      <td><input type='checkbox' name='selected_documents' value='{{ document }}'></td>
+      {# <td><<img src="photos/{{photo_id}}" alt="">></td> #}
+      <td>{{ document.name }}</td>
+      <td>{{ document.address }}</td>
+      <td>{{ document.city }}</td>
+      <td>{{ document.state }}</td>
+      <td>{{ document.postal_code }}</td>
+      <td>{{ document.stars }}</td>
+      <td>{{ document.review_count }}</td>
+      <td>{{ document.categories }}</td>
       </tr>
       {% endfor %}
-      </table>
+    </table>
       {{ pagination.links }}
+      <div style='width: 30%' class='form-group'>
+        <h4>Send selected results via email</h4>
+          {{ mailform.csrf_token }}
+          <label for='recipients'>Recipients:</label>
+          <input type='text' class='form-control' id='recipients' name='recipients' placeholder='something@anything.com'>
+          {% for error in mailform.recipients.errors %}
+          <span style='color: red;'>[{{ error }}]</span>
+          {% endfor %}
+          <label for='body'>Body:</label>
+          <input type='text' class='form-control' id='body' name='body' placeholder=''>
+      </div>
+          <button type='submit' class='btn btn-sm btn-success' name='send_mail' value='send_mail'>Send email</button>
+    </form>
+
 {% endblock %}

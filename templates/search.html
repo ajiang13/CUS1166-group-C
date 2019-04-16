@@ -13,7 +13,7 @@
     {% endwith %}
 
     <form name='advanced_search' value='advanced_search' method='post' role='form'>
-      {{ form.csrf }}
+      {{ form.csrf_token }}
       <div class='form-group'>
         <label for='name'>Name</label>
         <input type='text' class='form-control' id='name' name='name' placeholder=''>
@@ -29,8 +29,9 @@
 
         <label for='stars'>Rating</label>
         <input type='float' class='form-control' id='stars' name='stars' placeholder='e.g. 4.5'>
+
+        <button type='submit' class='btn btn-sm btn-success'>Advanced Search</button>
       </div>
-      <button type='submit' class='btn'>Advanced Search</button>
       </form>
 
 {% endblock %}
