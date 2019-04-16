@@ -17,6 +17,15 @@ app.config.from_object(Config)
 bootstrap = Bootstrap(app)
 mail = Mail(app)
 app.secret_key = "key"
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////Users/rsmal188/Documents/CUS1166-group-c-dev-small/database.db'
+db = SQLAlchemy(app)
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String(100), nullable=False)
+    username = db. Column(db.String(120), unique=True, nullable=False)
+    email = db. Column(db.String(60), unique=True, nullable=False)
+    password = db. Column(db.String(60), nullable=False)
 
 
 # Routes
@@ -234,24 +243,40 @@ def edit(id):
         return 'Error loading #{id}'.format(id=id)
 
 
-# login
-@app.route("/login", methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    error = None
-    if request.method == 'POST':
-        if (request.form['username'] != 'admin' or request.form['password']
-                != 'admin'):
-                error = 'Invalid Credentials. Please Try Again.'
-        else:
-            return redirect('/')
-    return render_template('login.html', error=error)
+    if request.method == 'GET':
+        return render_template('login.html')
+    username = request.form['username']
+    password = request.form['password']
+    registered_user = User.query.filter_by(
+                     username=username, password=password).first()
+    if registered_user is None:
+        flash('Username or Password is invalid', 'error')
+        return redirect(url_for('login'))
+    login_user(registered_user)
+    flash('Logged in successfully')
+    return redirect(request.args.get('next') or url_for('index'))
 
 
-@app.route("/register", methods=['GET', 'POST'])
+@app.route('/register', methods=['GET', 'POST'])
 def register():
-    form = RegistrationForm()
-    if request.method == 'POST' and form.validate():
-        return render_template('index.html')
+    if request.method == 'GET':
+        return render_template(register.html)
+
+    user = User(
+          request.form['name'],
+          request.form['username'],
+          request.form['email'],
+          request.form['password'],
+          request.form['confirm'])
+
+    db.session.add(new_user)
+    db.session.commit()
+
+    flash('New User Created!')
+    return redirect('/login')
+
     return render_template('register.html', form=form)
 
 
