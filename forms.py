@@ -13,7 +13,11 @@ class AdvancedSearchForm(Form):
     state = StringField('State Code')
     categories = StringField('Categories')
     stars = FloatField('Rating')
-
+    
+class LoginForm(FlaskForm):
+    username = StringField('username',[validators.DataRequired(),validators.Length(min=1, max=100)])
+    password = PasswordField('password',[validators.DataRequired(),validators.Length(min=1, max=100)])
+    
 class RegistrationForm(Form):
     name = [StringField('Name', [validators.Length(min=1, max=100)])]
     username = StringField('Username', [validators.Length(min=4, max=20)])
