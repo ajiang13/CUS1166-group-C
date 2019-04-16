@@ -21,11 +21,11 @@ class RegistrationForm(Form):
         validators.EqualTo('confirm', message='Passwords must match')
     ])
     confirm = PasswordField('Repeat Password')
-    
+
 class LoginForm(Form):
     username = StringField ('username', validators=[DataRequired(), Length(min=1, max=100)])
     password = PasswordField ('password', validators=[DataRequired(), Length(min=1, max=100)])
-    
+
 class FilterForm(Form):
     choices = [('Name', 'Name'), ('City', 'City'), ('State', 'State'), ('Stars', 'Stars'), ('Reviews', 'Reviews')]
     select = SelectField('Sort by: ', choices = choices)
