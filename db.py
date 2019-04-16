@@ -3,7 +3,7 @@ import pymongo
 client = pymongo.MongoClient('localhost', 27017)
 db = client.yelp
 collection = db.business
-collection2 = db.photos
+collection2 = db.photo
 # Create index on name field
 # Must create index to be able to search text
 db.business.create_index([('name', 'text')])
