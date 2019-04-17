@@ -1,18 +1,35 @@
 {% extends 'layout.html' %}
-{% import 'bootstrap/wtf.html' as wtf %}
-
-{% block title %}Add restaurant{% endblock %}
+{% block title %}Add Restaurant{% endblock %}
 {% block app_content %}
-<h2>New Restaurant</h2>
+    <div class="container">
+      <h1>Add</h1>
+      <br>
+      <form action="" method="post">
 
-{% from "_formhelpers.html" import render_field %}
-<form method=post>
-    <dl>
-        {{ render_field(form.name) }}
-        {{ render_field(form.city) }}
-        {{ render_field(form.state) }}
-        {{ render_field(form.is_open) }}
-    </dl>
-    <p><input class="btn btn-default" type="submit" value="Add">
-</form>
+        <label for='name'>Name</label>
+        <input type="text" class='form-control' placeholder="Name" name="name" value="{{
+          request.form.name }}">
+
+        <label for='name'>City</label>
+        <input type="text" class='form-control' placeholder="City" name="City" value="{{
+          request.form.city}}">
+
+        <label for='name'>State</label>
+        <input type="text" class='form-control' placeholder="State" name="State" value="{{
+            request.form.state }}">
+
+        <label for='name'>Categories</label>
+        <input type="categories" class='form-control' placeholder="Categories" name="categories" value="{{
+             request.form.categories }}">
+
+        <label for='name'>Availability</label>
+        <input type="is_open" class='form-control' placeholder="Check Availability eg. Open or Closed" name="is_open" value="{{
+             request.form.is_open }}">
+
+        <input class="btn btn-default" type="submit" value="Add">
+      </form>
+        {% if error %}
+       <p class="error"><strong>Error:</strong> {{ error }}
+     {% endif %}
+    </div>
 {% endblock %}

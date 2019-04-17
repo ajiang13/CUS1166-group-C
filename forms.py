@@ -61,7 +61,6 @@ class DisplayForm(FlaskForm):
 
 
 class RestaurantForm(FlaskForm):
-    is_open = [('Open', 'Open'), ('Closed', 'Closed')]
     name = StringField('Name')
     city = StringField('City')
     state = StringField('State')
@@ -69,7 +68,7 @@ class RestaurantForm(FlaskForm):
     latitude = StringField('latitude')
     longitude = StringField('longitude')
     hours = StringField('hours')
-    categories = StringField('categories')
+    is_open = [('Open', 'Open'), ('Closed', 'Closed')]
     is_open = SelectField('Availability', choices=is_open)
 
 

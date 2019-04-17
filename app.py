@@ -190,7 +190,7 @@ def display_info():
             'display_info.html', displayform=display, results=displayedresults,
             result_count=result_count)
 
-
+#Add
 @app.route("/new_restaurant", methods=['GET', 'POST'])
 def new_restaurant():
     form = RestaurantForm()
@@ -213,6 +213,7 @@ def new_restaurant():
     if new:
         db_session.add(restaurant)
         db_session.commit()
+
 
 
 # Edit
