@@ -146,26 +146,23 @@ def login():
         return redirect(url_for('login'))
     login_user(registered_user)
     flash('Logged in successfully')
-    return redirect(request.args.get('next') or url_for('index'))
+    return redirect('/')
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
-    
+
     if request.method == 'POST':
-        form = request.form
-        with sqlite3.connect("database.db") as con:
-            cur = con.cursor()
-            cur.execute("Insert INTO user (name,username,email,password) VALUES (?,?,?,?)",
-            (form['name'], form['username'], form['email'], form['password']))
-            rows = cur.fetchall();
-            con.commit()
-            msg = "User successfully created!"
+        try:
+            form = request.form
+            registered_user = User(form["name"],form["username"], form["emaiil"], form["password"])
+            db.session.add(registered_user)
+            db.session.commit
 
-            con.close()
-
-        return render_template('register.html', form=form)
+        except:
+            return render_template('register.html', form=form)
+    return render_template('register.html', error="There was an error registering this user")
 
 if __name__ == "__main__":
     app.run(debug=True, host='127.0.0.1', port=5110)
