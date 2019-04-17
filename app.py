@@ -151,19 +151,21 @@ def login():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    if request.method == 'GET':
-        return render_template(register.html)
+    form = RegistrationForm()
+    
+    if request.method == 'POST':
+        form = request.form
+        with sqlite3.connect("database.db") as con:
+            cur = con.cursor()
+            cur.execute("Insert INTO user (name,username,email,password) VALUES (?,?,?,?)",
+            (form['name'], form['username'], form['email'], form['password']))
+            rows = cur.fetchall();
+            con.commit()
+            msg = "User successfully created!"
 
-    user = User (request.form['name'],request.form['username'] ,
-    request.form['email'], request.form['password'], request.form['confirm'])
+            con.close()
 
-        db.session.add(new_user)
-        db.session.commit()
-
-        flash('New User Created!')
-        return redirect('/login')
-
-    return render_template('register.html', form=form)
+        return render_template('register.html', form=form)
 
 if __name__ == "__main__":
     app.run(debug=True, host='127.0.0.1', port=5110)
