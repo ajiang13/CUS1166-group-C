@@ -173,22 +173,23 @@ def search_results_filtered(page):
 # Display
 @app.route("/display_info", methods=['GET', 'POST'])
 def display_info():
+    results = []
     display = DisplayForm(request.form)
 
     if (session['display_info_name'] != '' or session['display_info_hours']
         != '' or session['display_info_latitude'] != ''
             or session['display_info_longitude'] != ''):
-        d1 = session['display_info_name']
-        d2 = session['display_info_hours']
-        d3 = session['display_info_latitude']
-        d4 = session['display_info_longitude']
+        d1 = session['display_info_hours']
+        d2 = session['display_info_latitude']
+        d3 = session['display_info_longitude']
+
 
     if request.form.get('displaybutton') == "Display Info":
         displayby = display.data['select']
         displayedresults = db.display_info(displayby, results, 1)
         return render_template(
             'display_info.html', displayform=display, results=displayedresults,
-            result_count=result_count)
+            result_count=result_count, d1=d1, d2=d2,d3=d3)
 
 #Add
 @app.route("/new_restaurant", methods=['GET', 'POST'])
@@ -197,22 +198,26 @@ def new_restaurant():
     if request.method == 'POST' and form.validate():
         # save the restaurant
         restaurant = Restaurant()
-        save_changes(restaurant, form, new=True)
+        save_changes(RestaurantForm, new=True)
         flash('Restaurant created successfully!')
-        return redirect('/')
-    return render_template('new_restaurant.html', form=form)
+
+    return render_template('new_restaurant.html', form=RestaurantForm)
 
     def submit(restaurant, form, new=False):
         restaurant = Restaurant()
         restaurant.name = form.restaurant.data
         restaurant.name = name
+        restaurant.address = form.address
         restaurant.city = form.city.data
         restaurant.state = form.state.data
-        restaurant.is_open = form.is_open.data
+        restaurant.zip_code = form.zip_code
+        restaurant.categories = form.categories
 
     if new:
-        db_session.add(restaurant)
-        db_session.commit()
+        db.add(RestaurantForm)
+        db.commit()
+
+    return render_template('new_restaurant.html', form=form)
 
 
 
@@ -230,7 +235,7 @@ def edit(id):
             save_changes(restaurant, form)
             flash('Restaurant updated successfully!')
             return redirect('/')
-        return render_template('edit_restaurant.html', form=form)
+        return render_template('edit.html', form=form)
     else:
         return 'Error loading #{id}'.format(id=id)
 

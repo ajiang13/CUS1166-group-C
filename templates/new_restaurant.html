@@ -3,28 +3,41 @@
 {% block app_content %}
     <div class="container">
       <h1>Add</h1>
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <ul class=flashes>
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
       <br>
-      <form action="" method="post">
+        <form name='Add' value='new_restaurant' method='post' role='form'>
 
         <label for='name'>Name</label>
-        <input type="text" class='form-control' placeholder="Name" name="name" value="{{
+        <input type="text" class='form-control' placeholder="" name="name" value="{{
           request.form.name }}">
 
-        <label for='name'>City</label>
-        <input type="text" class='form-control' placeholder="City" name="City" value="{{
+          <label for='address'>Address</label>
+          <input type="text" class='form-control' placeholder="" name="Address" value="{{
+            request.form.address}}">
+
+        <label for='city'>City</label>
+        <input type="text" class='form-control' placeholder="e.g. Queens" name="City" value="{{
           request.form.city}}">
 
-        <label for='name'>State</label>
-        <input type="text" class='form-control' placeholder="State" name="State" value="{{
+        <label for='state'>State</label>
+        <input type="text" class='form-control' placeholder="" name="State" value="{{
             request.form.state }}">
 
-        <label for='name'>Categories</label>
-        <input type="categories" class='form-control' placeholder="Categories" name="categories" value="{{
-             request.form.categories }}">
+        <label for='zip_code'>Zip Code</label>
+        <input type="text" class='form-control' placeholder="" name="zip code"
+        value="{{ request.form.zip_code }}">
 
-        <label for='name'>Availability</label>
-        <input type="is_open" class='form-control' placeholder="Check Availability eg. Open or Closed" name="is_open" value="{{
-             request.form.is_open }}">
+        <label for='categories'>Categories</label>
+        <input type="text" class='form-control' placeholder="e.g. Sushi, Meat, and Italian" name="categories"
+        value="{{ request.form.categories }}">
 
         <input class="btn btn-default" type="submit" value="Add">
       </form>

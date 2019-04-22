@@ -37,7 +37,7 @@ def display_info(d1, d2, d3, d4):
     if d4 != '':
         display_string.update({'longitude': {'$regex': d4, '$options': 'i'}})
     results = db.business.find(display_string)
-    result_count = db.business.display_documents(display_string)
+    result_count = db.business.display_info(display_string)
     return results, result_count
 
 

@@ -62,14 +62,12 @@ class DisplayForm(FlaskForm):
 
 class RestaurantForm(FlaskForm):
     name = StringField('Name')
+    address = StringField('Address')
     city = StringField('City')
     state = StringField('State')
+    zip_code = StringField('Zip Code')
     categories = StringField('Categories')
-    latitude = StringField('latitude')
-    longitude = StringField('longitude')
-    hours = StringField('hours')
-    is_open = [('Open', 'Open'), ('Closed', 'Closed')]
-    is_open = SelectField('Availability', choices=is_open)
+
 
 
 class MailForm(FlaskForm):
