@@ -2,6 +2,7 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 import json
+import os
 
 from config import Config
 from flask import (Flask, render_template, url_for, request, redirect, flash,
@@ -329,4 +330,5 @@ def sent():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host='127.0.0.1', port=5110)
+    port = int(os.environ.get('PORT', 5110))
+    app.run(debug=True, host='0.0.0.0', port=port)

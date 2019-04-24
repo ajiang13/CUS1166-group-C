@@ -1,6 +1,5 @@
 import os
 
-
 class Config(object):
     MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 465
