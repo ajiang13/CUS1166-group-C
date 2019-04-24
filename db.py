@@ -1,6 +1,7 @@
 import pymongo
+import os
 # Setup
-client = pymongo.MongoClient('localhost', 27017)
+client = pymongo.MongoClient(os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/'))
 db = client.yelp
 collection = db.business
 collection2 = db.photo
