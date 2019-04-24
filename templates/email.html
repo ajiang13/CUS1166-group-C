@@ -12,11 +12,11 @@
       <th><strong>Address</strong></th>
       <th><strong>City</strong></th>
       <th><strong>State/Province</strong></th>
-      <th><strong>Zip Code</strong></th>
+      <th><strong>Postcode</strong></th>
       <th><strong>Stars</strong></th>
       <th><strong>Review Count</strong></th>
       <th><strong>Categories</strong></th>
-{#
+
       {% for name, address, city, state, postal_code, stars, review_count,
         categories in lists %}
       <tr>
@@ -29,9 +29,6 @@
       <td>{{ review_count }}</td>
       <td>{{ categories }}</td>
       </tr>
-      {% endfor %} #}
-      {% for x in test %}
-      <tr>{{ x }}</tr>
       {% endfor %}
     </table>
 {% endblock %}

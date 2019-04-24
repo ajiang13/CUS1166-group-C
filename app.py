@@ -1,12 +1,11 @@
 # Imports
 from werkzeug.security import generate_password_hash, check_password_hash
-from werkzeug.utils import secure_filename
 import sqlite3
 import json
 
 from config import Config
 from flask import (Flask, render_template, url_for, request, redirect, flash,
-                   session, jsonify)
+                   session)
 from flask_bootstrap import Bootstrap
 from flask_login import login_user
 from flask_mail import Mail, Message
@@ -90,10 +89,23 @@ def search_results(advanced_search, form, page):
                     format_number=True,
                     css_framework='bootstrap4')
         if mailform.validate_on_submit():
-            test = request.form.getlist('selected_documents')
-            for item in test:
+            # Get data from selected rows in search results table
+            selected_list = request.form.getlist('selected_documents')
+            # Create and fill lists with data to pass to email template
+            (names, addresses, cities, states, postal_codes, stars,
+                review_counts, categories) = ([], [], [], [], [], [], [], [])
+            lists = zip(names, addresses, cities, states, postal_codes,
+                        stars, review_counts, categories)
+            for item in selected_list:
                 item = json.loads(item)
-                print(item['name'])
+                names.append(item['name'])
+                addresses.append(item['address'])
+                cities.append(item['city'])
+                states.append(item['state'])
+                postal_codes.append(item['postal_code'])
+                stars.append(item['stars'])
+                review_counts.append(item['review_count'])
+                categories.append(item['categories'])
             # Build and send email message
             msg = Message(
                 'Mail from CUS1166 Group C',
@@ -102,18 +114,17 @@ def search_results(advanced_search, form, page):
             body = msg.body
             msg.html = render_template(
                       'email.html',
-                      test=test,
-                      #names=names,
-                      #addresses=addresses,
-                      #cities=cities,
-                      #states=states,
-                      #postal_codes=postal_codes,
-                      #stars=stars,
-                      #review_counts=review_counts,
-                      #categories=categories,
-                      #lists=lists,
+                      names=names,
+                      addresses=addresses,
+                      cities=cities,
+                      states=states,
+                      postal_codes=postal_codes,
+                      stars=stars,
+                      review_counts=review_counts,
+                      categories=categories,
+                      lists=lists,
                       body=body)
-            #mail.send(msg)
+            mail.send(msg)
             return redirect('/sent')
     if not results:
         flash('No results found')
@@ -158,18 +169,21 @@ def search_results_filtered(page):
                     format_number=True,
                     css_framework='bootstrap4')
         if mailform.validate_on_submit():
-            names, addresses, cities, states, postal_codes, stars, \
-                review_counts, categories = ([], [], [], [], [], [], [], [])
+            selected_list = request.form.getlist('selected_documents')
+            (names, addresses, cities, states, postal_codes, stars,
+                review_counts, categories) = ([], [], [], [], [], [], [], [])
             lists = zip(names, addresses, cities, states, postal_codes,
                         stars, review_counts, categories)
-            names.extend(request.form.getlist('sel_names'))
-            addresses.extend(request.form.getlist('sel_addresses'))
-            cities.extend(request.form.getlist('sel_cities'))
-            states.extend(request.form.getlist('sel_states'))
-            postal_codes.extend(request.form.getlist('sel_postal_codes'))
-            stars.extend(request.form.getlist('sel_stars'))
-            review_counts.extend(request.form.getlist('sel_review_counts'))
-            categories.extend(request.form.getlist('sel_categories'))
+            for item in selected_list:
+                item = json.loads(item)
+                names.append(item['name'])
+                addresses.append(item['address'])
+                cities.append(item['city'])
+                states.append(item['state'])
+                postal_codes.append(item['postal_code'])
+                stars.append(item['stars'])
+                review_counts.append(item['review_count'])
+                categories.append(item['categories'])
             msg = Message(
                 'Mail from CUS1166 Group C',
                 recipients=[mailform.recipients.data])

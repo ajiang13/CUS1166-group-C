@@ -25,7 +25,7 @@
       <th><strong>Address</strong></th>
       <th><strong>City</strong></th>
       <th><strong>State/Province</strong></th>
-      <th><strong>Zip Code</strong></th>
+      <th><strong>Postcode</strong></th>
       <th><strong>Stars</strong></th>
       <th><strong>Review Count</strong></th>
       <th><strong>Categories</strong></th>
@@ -36,14 +36,14 @@
       <td><input type='checkbox' name='selected_documents'
       value='{"name": "{{ document.name }}", "address": "{{ document.address }}", "city": "{{ document.city }}", "state": "{{ document.state }}", "postal_code": "{{ document.postal_code }}", "stars": "{{ document.stars }}", "review_count": "{{ document.review_count }}", "categories": "{{ document.categories }}"}'></td>
       {# <td><<img src="photos/{{photo_id}}" alt="">></td> #}
-      <td><input type='hidden' name='sel_names' value='{{ document.name }}'>{{ document.name }}</td>
-      <td><input type='hidden' name='sel_addresses' value='{{ document.address }}'>{{ document.address }}</td>
-      <td><input type='hidden' name='sel_cities' value='{{ document.city }}'>{{ document.city }}</td>
-      <td><input type='hidden' name='sel_states' value='{{ document.state }}'>{{ document.state }}</td>
-      <td><input type='hidden' name='sel_postal_codes' value='{{ document.postal_code }}'>{{ document.postal_code }}</td>
-      <td><input type='hidden' name='sel_stars' value='{{ document.stars }}'>{{ document.stars }}</td>
-      <td><input type='hidden' name='sel_review_counts' value='{{ document.review_count }}'>{{ document.review_count }}</td>
-      <td><input type='hidden' name='sel_categories' value='{{ document.categories }}'>{{ document.categories }}</td>
+      <td>{{ document.name }}</td>
+      <td>{{ document.address }}</td>
+      <td>{{ document.city }}</td>
+      <td>{{ document.state }}</td>
+      <td>{{ document.postal_code }}</td>
+      <td>{{ document.stars }}</td>
+      <td>{{ document.review_count }}</td>
+      <td>{{ document.categories }}</td>
       </tr>
       {% endfor %}
     </table>
