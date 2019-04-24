@@ -22,8 +22,10 @@ def advanced_search(q1, q2, q3, q4, q5):
     if q5 is not None:
         search_string.update({'stars': {'$gte': q5}})
     results = db.business.find(search_string)
-    result_count = db.business.count_documents(search_string)
+    result_count = db.business.count(search_string)
     return results, result_count
+
+
 
 
 def display_info(d1, d2, d3, d4):
@@ -37,8 +39,10 @@ def display_info(d1, d2, d3, d4):
     if d4 != '':
         display_string.update({'longitude': {'$regex': d4, '$options': 'i'}})
     results = db.business.find(display_string)
-    result_count = db.business.display_info(display_string)
+    result_count = db.business.display(display_string)
     return results, result_count
+
+
 
 
 # Funtions for sorting results

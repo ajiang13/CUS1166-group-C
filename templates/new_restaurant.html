@@ -2,7 +2,7 @@
 {% block title %}Add Restaurant{% endblock %}
 {% block app_content %}
     <div class="container">
-      <h1>Add</h1>
+      <h1>Add a new restaurant!</h1>
       {% with messages = get_flashed_messages() %}
         {% if messages %}
           <ul class=flashes>
@@ -14,7 +14,8 @@
       {% endwith %}
       <br>
         <form name='Add' value='new_restaurant' method='post' role='form'>
-
+          {{ form.csrf_token }}
+            <div class='form-group'>
         <label for='name'>Name</label>
         <input type="text" class='form-control' placeholder="" name="name" value="{{
           request.form.name }}">
@@ -39,7 +40,7 @@
         <input type="text" class='form-control' placeholder="e.g. Sushi, Meat, and Italian" name="categories"
         value="{{ request.form.categories }}">
 
-        <input class="btn btn-default" type="submit" value="Add">
+        <input class="btn btn-sm btn-success" type="submit" value="Add">
       </form>
         {% if error %}
        <p class="error"><strong>Error:</strong> {{ error }}
