@@ -43,35 +43,35 @@ def display_info(d1, d2, d3, d4):
 
 # Funtions for sorting results
 def sort_by_name(results, reverse):
-    if reverse is True:
+    if (reverse == True):
         return results.sort('name')
     else:
         return results.sort('name', -1)
 
 
 def sort_by_city(results, reverse):
-    if reverse is True:
+    if (reverse == True):
         return results.sort('city')
     else:
         return results.sort('city', -1)
 
 
 def sort_by_state(results, reverse):
-    if reverse is True:
+    if (reverse == True):
         return results.sort('state')
     else:
         return results.sort('state', -1)
 
 
 def sort_by_stars(results, reverse):
-    if reverse is True:
+    if (reverse == True):
         return results.sort('stars')
     else:
         return results.sort('stars', -1)
 
 
 def sort_by_review_count(results, reverse):
-    if reverse is True:
+    if (reverse == True):
         return results.sort('review_count')
     else:
         return results.sort('review_count', -1)

@@ -1,12 +1,17 @@
 # Imports
+from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
+import sqlite3
+import json
 
 from config import Config
 from flask import (Flask, render_template, url_for, request, redirect, flash,
                    session, jsonify)
 from flask_bootstrap import Bootstrap
+from flask_login import login_user
 from flask_mail import Mail, Message
 from flask_paginate import Pagination, get_page_args
+from flask_sqlalchemy import SQLAlchemy
 from forms import (AdvancedSearchForm, FilterForm, RestaurantForm, MailForm,
                    DisplayForm, RegistrationForm)
 import db
@@ -18,14 +23,15 @@ bootstrap = Bootstrap(app)
 mail = Mail(app)
 app.secret_key = "key"
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////Users/rsmal188/Documents/CUS1166-group-c-dev-small/database.db'
-db = SQLAlchemy(app)
+db2 = SQLAlchemy(app)
 
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
-    name = db.Column(db.String(100), nullable=False)
-    username = db. Column(db.String(120), unique=True, nullable=False)
-    email = db. Column(db.String(60), unique=True, nullable=False)
-    password = db. Column(db.String(60), nullable=False)
+
+class User(db2.Model):
+    id = db2.Column(db2.Integer, primary_key=True)
+    name = db2.Column(db2.String(100), nullable=False)
+    username = db2.Column(db2.String(120), unique=True, nullable=False)
+    email = db2.Column(db2.String(60), unique=True, nullable=False)
+    password = db2.Column(db2.String(60), nullable=False)
 
 
 # Routes
@@ -66,7 +72,9 @@ def search_results(advanced_search, form, page):
         session['adv_search_state'] = q3
         session['adv_search_categories'] = q4
         session['adv_search_stars'] = q5
+        # Get data from query
         results, result_count = db.advanced_search(q1, q2, q3, q4, q5)
+        # Pagination
         total = result_count
         page = request.args.get('page', '1')
         page = int(page)
@@ -82,15 +90,11 @@ def search_results(advanced_search, form, page):
                     format_number=True,
                     css_framework='bootstrap4')
         if mailform.validate_on_submit():
-            #checked_results = request.form.to_dict(flat=False)
-            #checked_results = {}
-            #for key in checked_data.keys():
-            #    for value in checked_data.getlist(key):
-            #        checked_results.update(checked_data)
-            checked_results = request.form.getlist('selected_documents')
-            #checked_results = []
-            #for document in results_list:
-            #    checked_results.append({document})
+            test = request.form.getlist('selected_documents')
+            for item in test:
+                item = json.loads(item)
+                print(item['name'])
+            # Build and send email message
             msg = Message(
                 'Mail from CUS1166 Group C',
                 recipients=[mailform.recipients.data])
@@ -98,15 +102,18 @@ def search_results(advanced_search, form, page):
             body = msg.body
             msg.html = render_template(
                       'email.html',
-                      checked_results=checked_results,
+                      test=test,
+                      #names=names,
+                      #addresses=addresses,
+                      #cities=cities,
+                      #states=states,
+                      #postal_codes=postal_codes,
+                      #stars=stars,
+                      #review_counts=review_counts,
+                      #categories=categories,
+                      #lists=lists,
                       body=body)
-            mail.send(msg)
-            #print(results)
-            #for keys in results:
-            #    print(keys.values)
-            print(checked_results)
-            #for document in checked_results:
-            #    print(document.name)
+            #mail.send(msg)
             return redirect('/sent')
     if not results:
         flash('No results found')
@@ -151,32 +158,54 @@ def search_results_filtered(page):
                     format_number=True,
                     css_framework='bootstrap4')
         if mailform.validate_on_submit():
+            names, addresses, cities, states, postal_codes, stars, \
+                review_counts, categories = ([], [], [], [], [], [], [], [])
+            lists = zip(names, addresses, cities, states, postal_codes,
+                        stars, review_counts, categories)
+            names.extend(request.form.getlist('sel_names'))
+            addresses.extend(request.form.getlist('sel_addresses'))
+            cities.extend(request.form.getlist('sel_cities'))
+            states.extend(request.form.getlist('sel_states'))
+            postal_codes.extend(request.form.getlist('sel_postal_codes'))
+            stars.extend(request.form.getlist('sel_stars'))
+            review_counts.extend(request.form.getlist('sel_review_counts'))
+            categories.extend(request.form.getlist('sel_categories'))
             msg = Message(
                 'Mail from CUS1166 Group C',
-                recipients=[form.recipients.data])
-            msg.body = form.body.data
+                recipients=[mailform.recipients.data])
+            msg.body = mailform.body.data
+            body = msg.body
+            msg.html = render_template(
+                      'email.html',
+                      names=names,
+                      addresses=addresses,
+                      cities=cities,
+                      states=states,
+                      postal_codes=postal_codes,
+                      stars=stars,
+                      review_counts=review_counts,
+                      categories=categories,
+                      lists=lists,
+                      body=body)
             mail.send(msg)
             return redirect('/sent')
-    if not results:
-        flash('No results found')
-        return redirect('/search')
-    if request.form.get('sortbutton') == 'Sort Ascending':
-        sortby = filter.data['select']
-        sortedresults = db.sort_request(sortby, results, 1)
-        return render_template(
-            'search_results.html', filterform=filter, mailform=mailform,
-            results=sortedresults, result_count=result_count,
-            results_for_render=results_for_render, page=page,
-            per_page=per_page, pagination=pagination)
-    elif request.form.get('sortbutton') == 'Sort Descending':
-        sortby = filter.data['select']
-        sortedresults = db.sort_request(sortby, results, -1)
-        #sortedresults = db.filter_by_stars(results, 3)
-        return render_template(
-            'search_results.html', filterform=filter, mailform=mailform,
-            results=sortedresults, result_count=result_count,
-            results_for_render=results_for_render, page=page,
-            per_page=per_page, pagination=pagination)
+        if request.form.get('sortbutton') == "Sort Ascending":
+            sortby = filter.data['select']
+            sortedresults = db.sort_request(sortby, results, 1)
+            return render_template(
+                'search_results.html', filterform=filter, mailform=mailform,
+                results=sortedresults, result_count=result_count,
+                results_for_render=results_for_render, page=page,
+                per_page=per_page, pagination=pagination)
+        elif request.form.get('sortbutton') == "Sort Descending":
+            sortby = filter.data['select']
+            sortedresults = db.sort_request(sortby, results, -1)
+            #sortedresults = db.filter_by_stars(results, 3)
+            return render_template(
+                'search_results.html', filterform=filter, mailform=mailform,
+                results=sortedresults, result_count=result_count,
+                results_for_render=results_for_render, page=page,
+                per_page=per_page, pagination=pagination)
 
 
 # Display
@@ -262,7 +291,7 @@ def login():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'GET':
-        return render_template(register.html)
+        return render_template('register.html')
 
     user = User(
           request.form['name'],
