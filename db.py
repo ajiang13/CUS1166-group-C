@@ -5,7 +5,12 @@ MONGO_URI = os.environ.get('MONGODB_URI')
 if not MONGO_URI:
     MONGO_URI = 'mongodb://localhost:27017/yelp'
 client = pymongo.MongoClient(MONGO_URI)
-db = client['db_name']
+MONGODB_NAME = os.environ.get('MONGODB_NAME')
+if not MONGODB_NAME:
+    MONGODB_NAME = 'yelp'
+print(MONGODB_NAME)
+db = client[MONGODB_NAME]
+#db = client['heroku_dtrxcwx8']
 print(db)
 collection = db.business
 #collection2 = db.photo
