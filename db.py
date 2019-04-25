@@ -2,7 +2,7 @@ import pymongo
 import os
 # Setup
 client = pymongo.MongoClient(os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/'))
-db = client.yelp
+db = os.environ.get('MONGODB_NAME', client.yelp)
 collection = db.business
 collection2 = db.photo
 # Create index on name field
