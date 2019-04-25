@@ -3,16 +3,11 @@ import os
 # Setup
 MONGO_URI = os.environ.get('MONGODB_URI')
 if not MONGO_URI:
-    MONGO_URI = 'mongodb://localhost:27017/'
+    MONGO_URI = 'mongodb://localhost:27017/yelp'
 client = pymongo.MongoClient(MONGO_URI)
-MONGODB_NAME = os.environ.get('MONGODB_NAME')
-print(MONGODB_NAME)
-if not MONGODB_NAME:
-    MONGODB_NAME = client.yelp
-print(MONGODB_NAME)
-db = MONGODB_NAME
+db = client['db_name']
 print(db)
-#collection = db['business']
+collection = db.business
 #collection2 = db.photo
 # Create index on name field
 # Must create index to be able to search text
