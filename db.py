@@ -1,8 +1,14 @@
 import pymongo
 import os
 # Setup
-client = pymongo.MongoClient(os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/'))
-db = os.environ.get('MONGODB_NAME', client.yelp)
+MONGO_URI = os.environ.get('MONGODB_URI')
+if not MONGO_URI:
+    MONGO_URI = 'mongodb://localhost:27017/'
+client = pymongo.MongoClient(MONGO_URI)
+MONGODB_NAME = os.environ.get('MONGODB_NAME')
+if not MONGODB_NAME:
+    MONGODB_NAME = client.yelp
+db = MONGODB_NAME
 collection = db.business
 collection2 = db.photo
 # Create index on name field
