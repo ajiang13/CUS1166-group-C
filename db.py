@@ -9,8 +9,8 @@ MONGODB_NAME = os.environ.get('MONGODB_NAME')
 if not MONGODB_NAME:
     MONGODB_NAME = client.yelp
 db = MONGODB_NAME
-collection = db.business
-collection2 = db.photo
+collection = db['business']
+#collection2 = db.photo
 # Create index on name field
 # Must create index to be able to search text
 db.business.create_index([('name', 'text')])
