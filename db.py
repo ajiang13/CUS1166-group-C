@@ -8,6 +8,13 @@ collection2 = db.photos
 # Must create index to be able to search text
 db.business.create_index([('name', 'text')])
 
+db.business.insert({ 'name' : "text"}, { 'address' : "text"})
+
+
+#
+# [(name : "text")], [(address='text')], [(city= "text")],
+# [(state="text")], [(zip_code="text")], [(categories= "text")])
+
 
 def advanced_search(q1, q2, q3, q4, q5):
     search_string = {}
@@ -25,22 +32,26 @@ def advanced_search(q1, q2, q3, q4, q5):
     result_count = db.business.count(search_string)
     return results, result_count
 
+def add_restaurant(a1, a2, a3, a4, a5, a6):
+    add = {}
+    if a1 != '':
+        add.update({'$text': {'$add': a1}})
+    if a2 != '':
+        add.update({'$text': {'$regex': a2, '$options': 'i'}})
+    if a3 != '':
+        add.update({'city': {'$regex': a3, '$options': 'i'}})
+    if a4 != '':
+        add.update({'state': {'$regex': a4, '$options': 'i'}})
+    if a5 != '':
+        add.update({'zip_code': {'$regex': a5, '$options': 'i'}})
+    if a6 != '':
+        add.update({'categories': {'$regex': a6, '$options': 'i'}})
+
+    results = db.business.insert(add)
+    return results
 
 
 
-def display_info(d1, d2, d3, d4):
-    display_string = {}
-    if d1 != '':
-        display_string.update({'$text': {'$search': d1}})
-    if d2 != '':
-        display_string.update({'hours': {'$regex': d2, '$options': 'i'}})
-    if d3 != '':
-        display_string.update({'latitude': {'$regex': d3, '$options': 'i'}})
-    if d4 != '':
-        display_string.update({'longitude': {'$regex': d4, '$options': 'i'}})
-    results = db.business.find(display_string)
-    result_count = db.business.display(display_string)
-    return results, result_count
 
 
 

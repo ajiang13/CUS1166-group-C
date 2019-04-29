@@ -193,28 +193,42 @@ def display_info():
 #Add
 @app.route("/new_restaurant", methods=['GET', 'POST'])
 def new_restaurant():
-    form = RestaurantForm()
-    if request.method == 'POST' and form.validate():
-        # save the restaurant
-        restaurant = RestaurantForm()
-        
-        flash('Restaurant created successfully!')
-        return redirect('/')
-    return render_template('new_restaurant.html', form=form)
+    add_restaurant = RestaurantForm()
+    if (add_restaurant.data['name'] != '' or add_restaurant.data['address']
+    != '' or add_restaurant.data['city'] != ''
+    or add_restaurant.data['state'] != ''
+    or add_restaurant.data['zip_code'] != ''
+        or add_restaurant.data['categories'] != ''):
+            a1 = add_restaurant.data['name']
+            a2 = add_restaurant.data['address']
+            a3 = add_restaurant.data['city']
+            a4 = add_restaurant.data['state']
+            a5 = add_restaurant.data['zip_code']
+            a6 = add_restaurant.data['categories']
 
-    def submit(restaurant, form, new=False):
-        restaurant = Restaurant()
-        restaurant.name = form.restaurant.data
-        restaurant.name = name
-        restaurant.city = form.city.data
-        restaurant.state = form.state.data
-        restaurant.is_open = form.is_open.data
+            session['add_restaurant_name'] = a1
+            session['add_restaurant_address'] = a2
+            session['add_restaurant_city'] = a3
+            session['add_restaurant_state'] = a4
+            session['add_restaurant_zip_code'] = a5
+            session['add_restaurant_categories'] = a6
+            results = db.add_restaurant(a1, a2, a3, a4, a5, a6)
+            total = results
 
-    if new:
-        db.business.add(restaurant)
-        db.business.commit()
+            return render_template('new_restaurant.html', restauarantform=add_restaurant,
+            results=results, a1=a1, a2=a2, a3=a3, a4=a4, a5=a5, a6=a6)
 
-
+# def submit(restaurant, form, new=False):
+#     if (add_restaurant.data['name'] != '' or add_restaurant.data['address']
+#     != '' or advanced_search.data['state'] != ''
+#     or advanced_search.data['categories'] != ''
+#         or advanced_search.data['stars'] != ''):
+#         a1 = add_restaurant.data['name']
+#         a2 = add_restaurant.data['address']
+#         a3 = add_restaurant.data['city']
+#         a4 = add_restaurant.data['state']
+#         a5 = add_restaurant.data['zip_code']
+#         a6 = add_restaurant.data['categories']
 
 # Edit
 @app.route("/item/<int:id>", methods=['GET', 'POST'])

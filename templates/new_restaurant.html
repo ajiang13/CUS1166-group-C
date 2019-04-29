@@ -13,8 +13,8 @@
         {% endif %}
       {% endwith %}
       <br>
-        <form name='Add' value='new_restaurant' method='post' role='form'>
-          {{ form.csrf_token }}
+        <form name='new_restaurant' value='new_restaurant' method='post' role='form'>
+          {{ restauarantform.csrf_token }}
             <div class='form-group'>
         <label for='name'>Name</label>
         <input type="text" class='form-control' placeholder="" name="name" value="{{
