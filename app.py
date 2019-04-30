@@ -9,6 +9,7 @@ from flask_mail import Mail, Message
 from flask_paginate import Pagination, get_page_args
 from forms import (AdvancedSearchForm, FilterForm, RestaurantForm, MailForm,
                    DisplayForm, RegistrationForm)
+from flask_s3 import FlaskS3
 import db
 
 # Create an instance of Flask class
@@ -17,6 +18,11 @@ app.config.from_object(Config)
 bootstrap = Bootstrap(app)
 mail = Mail(app)
 app.secret_key = "key"
+
+#S3 Setup
+s3 = FlaskS3()
+s3.init_app(app)
+app.config['FLASKS3_BUCKET_NAME'] = 'cus1166projectphotos'
 
 
 # Routes
