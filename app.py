@@ -99,6 +99,8 @@ def search_results(advanced_search, form, page):
             #for document in checked_results:
             #    print(document.name)
             return redirect('/sent')
+
+    db.create_photo_id_dictionary(results)
     if not results:
         flash('No results found')
         return redirect('/search')
@@ -148,6 +150,7 @@ def search_results_filtered(page):
             msg.body = form.body.data
             mail.send(msg)
             return redirect('/sent')
+
     if not results:
         flash('No results found')
         return redirect('/search')

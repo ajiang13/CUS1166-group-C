@@ -3,7 +3,7 @@ import pymongo
 client = pymongo.MongoClient('localhost', 27017)
 db = client.yelp
 collection = db.business
-collection2 = db.photos
+collection2 = db.photo
 # Create index on name field
 # Must create index to be able to search text
 db.business.create_index([('name', 'text')])
@@ -101,20 +101,27 @@ def create_business_id_list(results):
             business_id = document.get('business_id')
             print(business_id)
             business_ids.append(business_id)
-        results.rewind() #Rewinds the cursor back to the first document
+        # Rewinds the cursor back to the first document
+        results.rewind()
     return business_ids
 
 
-# Will query the pictures collection using the array of
+# Will query the pictures collection using the list of
 # business_ids, then return a dictionary of business_ids
 # and their photo_id values
 def create_photo_id_dictionary(results):
     photo_dict = {}
     business_ids = create_business_id_list(results)
-    #Queries the photos collection.
-    photo_results = db.photos.find({'business_id': {'$in': business_ids}})
-    #Convert cursor into a list of dictionaries(or Documents)
-    for business_id in business_ids:
-
-
+    # Queries the photos collection
+    photo_results = db.photo.find({'business_id': {'$in': business_ids}})
+    if photo_results:
+        print("Results")
+    # Adding all key,value pairs to a dictionary
+    # where business_id is a key and photo_id is the value
+    for photo in photo_results:
+        photo_business_id = photo['business_id']
+        photo_id = photo['photo_id']
+        photo_dict[photo_business_id] = photo_id
+    print(photo_dict)
+    results.rewind()
     return photo_dict

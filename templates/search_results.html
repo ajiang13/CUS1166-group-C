@@ -37,7 +37,7 @@
       {# {{photo_id = photo_dict.get(document.business_id) #}
       <tr>
       <td><input type='checkbox' name='selected_documents' value='{{ document }}'></td>
-      {# <td><<img src="photos/{{photo_id}}" alt="">></td> #}
+    {#  <td>{%for business_id,photo_id in photo_results.items%}{{ photo_id }}{% endfor %}</td> #}
       <td>{{ document.name }}</td>
       <td>{{ document.address }}</td>
       <td>{{ document.city }}</td>
