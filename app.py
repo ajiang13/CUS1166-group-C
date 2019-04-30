@@ -140,7 +140,7 @@ def login():
         return render_template('login.html')
     username = request.form['username']
     password = request.form['password']
-    registered_user = User.query.filter_by(username=username,password=password).first()
+    registered_user = user.query.filter_by(username=username,password=password).first()
     if registered_user is None:
         flash('Username or Password is invalid' , 'error')
         return redirect(url_for('login'))
@@ -156,7 +156,7 @@ def register():
     if request.method == 'POST':
         try:
             form = request.form
-            registered_user = User(form["name"],form["username"], form["emaiil"], form["password"])
+            registered_user = user(form["name"],form["username"], form["emaiil"], form["password"])
             db.session.add(registered_user)
             db.session.commit
 
