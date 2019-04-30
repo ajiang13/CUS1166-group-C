@@ -35,7 +35,7 @@ def advanced_search(q1, q2, q3, q4, q5):
 def add_restaurant(a1, a2, a3, a4, a5, a6):
     add = {}
     if a1 != '':
-        add.update({'$text': {'$add': a1}})
+        add.update({'$key': {'$add': a1}})
     if a2 != '':
         add.update({'$text': {'$regex': a2, '$options': 'i'}})
     if a3 != '':
