@@ -8,9 +8,8 @@ client = pymongo.MongoClient(MONGO_URI)
 MONGODB_NAME = os.environ.get('MONGODB_NAME')
 if not MONGODB_NAME:
     MONGODB_NAME = 'yelp'
-print(MONGODB_NAME)
 db = client[MONGODB_NAME]
-#db = client['heroku_dtrxcwx8']
+print('Connecting to:')
 print(db)
 collection = db.business
 #collection2 = db.photo
