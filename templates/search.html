@@ -30,10 +30,12 @@
         <label for='stars'>Rating</label>
         <input type='float' class='form-control' id='stars' name='stars' placeholder='e.g. 4.5'>
 
-        <button type='submit' class='btn btn-sm btn-success'>Advanced Search</button>
-
-        <button type='submit' class='btn btn-sm btn-success'>Generate Random Restaurant!</button>
+        <button type='submit' name='advanced_search' value='advanced_search' class='btn btn-sm btn-success'>Advanced Search</button>
       </div>
       </form>
+    <form name='random' value='random' method='post' role='form'>
+      <h4>Can't decide? Generate a random restaurant!</h4>
+      <button type='submit' name='random' value='random' class='btn btn-lg btn-success'>Random restaurant</button>
+    </form>
 
 {% endblock %}
