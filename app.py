@@ -66,7 +66,7 @@ def search_results(advanced_search, form, page):
         or advanced_search.data['city'] != ''
         or advanced_search.data['state'] != ''
         or advanced_search.data['categories'] != ''
-        or advanced_search.data['stars'] != ''):
+            or advanced_search.data['stars'] != ''):
 
         q1 = advanced_search.data['name']
         q2 = advanced_search.data['city']
@@ -134,18 +134,23 @@ def search_results(advanced_search, form, page):
                       body=body)
             mail.send(msg)
             return redirect('/sent')
-
-    #db.create_photo_id_dictionary(results)
-    if not results:
+    if request.form.get('random') == "random":
+        photo_dict = db.create_photo_id_dictionary(results)
+        random_result = db.random_restaurant()
+        results = random_result
+        return render_template('search_results.html', s3=s3, form=form,
+                               filterform=filter, mailform=mailform,
+                               random_result=random_result, results=results, photo_dict=photo_dict)
+    elif not results:
         flash('No results found')
         return redirect('/search')
     else:
         photo_dict = db.create_photo_id_dictionary(results)
         return render_template(
-            'search_results.html', s3 = s3, form=form, filterform=filter,
+            'search_results.html', s3=s3, form=form, filterform=filter,
             mailform=mailform, results=results, result_count=result_count,
             q1=q1, q2=q2, q3=q3, q4=q4, q5=q5, page=page, per_page=per_page,
-            pagination=pagination, results_for_render=results_for_render, photo_dict = photo_dict)
+            pagination=pagination, results_for_render=results_for_render, photo_dict=photo_dict)
 
 
 @app.route("/search_results_filtered/page/<int:page>", methods=['GET', 'POST'])
