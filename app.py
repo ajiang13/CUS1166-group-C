@@ -228,7 +228,7 @@ def edit():
         e6 = edit_restaurant.data['categories']
         db.edit_restaurant(e1, e2, e3, e4, e5, e6)
         return render_template('edit.html', form=edit_restaurant,
-                e1=e1, e2=e2, e3=e3, e4=e4, e5=e5, e6=e6, query=query)
+                e1=e1, e2=e2, e3=e3, e4=e4, e5=e5, e6=e6)
     flash("The restaurant has been updated!")
     return redirect('/edit')
 
