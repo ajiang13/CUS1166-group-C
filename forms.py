@@ -61,16 +61,12 @@ class DisplayForm(FlaskForm):
 
 
 class RestaurantForm(FlaskForm):
-    is_open = [('Open', 'Open'), ('Closed', 'Closed')]
     name = StringField('Name')
+    address = StringField('Address')
     city = StringField('City')
     state = StringField('State')
+    zip_code = StringField('Zip Code')
     categories = StringField('Categories')
-    latitude = StringField('latitude')
-    longitude = StringField('longitude')
-    hours = StringField('hours')
-    categories = StringField('categories')
-    is_open = SelectField('Availability', choices=is_open)
 
 
 class MailForm(FlaskForm):
@@ -78,3 +74,7 @@ class MailForm(FlaskForm):
                 'Recipient(s)',
                 [validators.InputRequired()])
     body = StringField('Body')
+
+
+class RandomForm(FlaskForm):
+    random = "Can't decide? Generate a random restaurant!"

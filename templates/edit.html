@@ -2,7 +2,7 @@
 {% block title %}Add Restaurant{% endblock %}
 {% block app_content %}
     <div class="container">
-      <h1>Add a new restaurant!</h1>
+      <h1>Replace a restaurant</h1>
       {% with messages = get_flashed_messages() %}
         {% if messages %}
           <ul class=flashes>
@@ -13,7 +13,7 @@
         {% endif %}
       {% endwith %}
       <br>
-      <form name='new_restaurant' value='new_restaurant' method='post' role='form'>
+      <form name='edit_restaurant' value='edit_restaurant' method='post' role='form'>
         {{ form.csrf_token }}
         <div class='form-group'>
           <label for='name'>Name</label>
@@ -34,7 +34,7 @@
           <label for='categories'>Categories</label>
           <input type='float' class='form-control' id='categories' name='categories' placeholder='e.g. Italian, Fast Food'>
 
-          <button type='submit' class='btn btn-sm btn-success'>Add</button>
+          <button type='submit' class='btn btn-sm btn-success'>Edit</button>
         </div>
         </form>
         {% if error %}
