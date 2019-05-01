@@ -38,8 +38,8 @@
       {%if photo_dict[document.business_id] != Null%}
         {#<<img src="s3.amazon.com/bucket//"{{ photo_dict[document.business_id] }}.jpg" alt="">>#}
         {#<img src="/static/photos/{{photo_dict[document.business_id]}}.jpg" alt="">#}
-        {#<img src="/static/photos/UFuRUHHsXZZSig0hA-UQ4w.jpg" alt="">#}
-        {{photo_dict[document.business_id]}}.jpg
+        <img src="/static/photos/UFuRUHHsXZZSig0hA-UQ4w.jpg" class = "img-rounded" style = "width:20%" alt="">
+        {#{{photo_dict[document.business_id]}}.jpg#}
       {% endif %}
       </td>
       <td>{{ document.name }}</td>

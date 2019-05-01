@@ -12,7 +12,7 @@ db = client[MONGODB_NAME]
 print('Connecting to:')
 print(db)
 collection = db.business
-collection2 = db.pictures
+collection2 = db.photo
 # Create index on name field
 # Must create index to be able to search text
 db.business.create_index([('name', 'text')])
@@ -122,7 +122,7 @@ def create_photo_id_dictionary(results):
     for business_id in business_ids:
         try:
             # Queries the pictures collection
-            photo = db.pictures.find_one({'business_id': business_id})
+            photo = db.photo.find_one({'business_id': business_id})
             photo_id = photo['photo_id']
             photo_dict[business_id] = photo_id
         except:

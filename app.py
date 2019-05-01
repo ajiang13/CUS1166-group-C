@@ -18,7 +18,7 @@ from flask_s3 import FlaskS3
 import db
 
 # Create an instance of Flask class
-app = Flask(__name__, template_folder='templates')
+app = Flask(__name__, static_url_path = '/static', template_folder='templates')
 app.config.from_object(Config)
 bootstrap = Bootstrap(app)
 mail = Mail(app)
@@ -140,6 +140,7 @@ def search_results(advanced_search, form, page):
         return redirect('/search')
     else:
         photo_dict = db.create_photo_id_dictionary(results)
+        print(photo_dict)
         return render_template(
             'search_results.html', s3 = s3, form=form, filterform=filter,
             mailform=mailform, results=results, result_count=result_count,
