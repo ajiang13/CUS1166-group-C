@@ -40,7 +40,9 @@ def add_restaurant(a1, a2, a3, a4, a5, a6):
 
 
 def edit_restaurant(e1, e2, e3, e4, e5, e6):
-    db.business.update_one({}, {'$set': {"name": e1, "address": e2,
+    # needs to be passed query first
+    query = {}
+    db.business.update_one({query}, {'$set': {"name": e1, "address": e2,
     "city": e3, "state": e4, "zip_code": e5, "categories": e6}}, upsert=False)
 
 
