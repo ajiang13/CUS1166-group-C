@@ -124,3 +124,8 @@ def create_photo_id_dictionary(results):
             pass
     results.rewind()
     return photo_dict
+
+
+def random_restaurant():
+    random_result = db.business.aggregate([{'$sample': {'size': 1}}])
+    return random_result
