@@ -4,6 +4,7 @@
 {% block title %}Search results{% endblock %}
 {% block app_content %}
     <h1>Search Results</h1>
+    {% if not random_result %}
     {{ pagination.info }}
     {{ pagination.links }}
   <form name='filter' value='filter' method='post' role='form' action='search_results_filtered'>
@@ -17,10 +18,11 @@
        <button type='submit' class='btn btn-sm btn-success' name='sortbutton' value='Sort Descending'>Sort Descending</button>
     </div>
   </form>
+  {% endif %}
   <form action='' name='mail' value='mail' method='post' role='form'>
     <table class="table table-hover">
       <th><strong>Select</strong></th>
-      <th><strong>Thumbnail</strong></th>
+      {# <th><strong>Thumbnail</strong></th> #}
       <th><strong>Name</strong></th>
       <th><strong>Address</strong></th>
       <th><strong>City</strong></th>
@@ -31,15 +33,16 @@
       <th><strong>Categories</strong></th>
 
       {% for document in results %}
+      {# {{photo_id = photo_dict.get(document.business_id) #}
       <tr>
         <td><input type='checkbox' name='selected_documents'
         value='{"name": "{{ document.name }}", "address": "{{ document.address }}", "city": "{{ document.city }}", "state": "{{ document.state }}", "postal_code": "{{ document.postal_code }}", "stars": "{{ document.stars }}", "review_count": "{{ document.review_count }}", "categories": "{{ document.categories }}"}'></td>
       <td>
-      {%if photo_dict[document.business_id] != Null%}
-        {#<<img src="s3.amazon.com/bucket//"{{ photo_dict[document.business_id] }}.jpg" alt="">>#}
-        {#<img src="/static/photos/{{photo_dict[document.business_id]}}.jpg" alt="">#}
-        <img src="/static/photos/UFuRUHHsXZZSig0hA-UQ4w.jpg" class = "img-rounded" style = "width:20%" alt="">
-        {#{{photo_dict[document.business_id]}}.jpg#}
+      {% if photo_dict[document.business_id] != Null %}
+        {# <img src="s3.amazon.com/bucket//"{{ photo_dict[document.business_id] }}.jpg" alt=""> #}
+        {# <img src="/static/photos/{{photo_dict[document.business_id]}}.jpg" alt=""> #}
+        {# <img src="/static/photos/UFuRUHHsXZZSig0hA-UQ4w.jpg" class = "img-rounded" style = "width:20%" alt=""> #}
+        {{photo_dict[document.business_id]}}.jpg
       {% endif %}
       </td>
       <td>{{ document.name }}</td>
@@ -53,7 +56,9 @@
       </tr>
       {% endfor %}
     </table>
+    {% if not random_result %}
       {{ pagination.links }}
+    {% endif %}
       <div style='width: 30%' class='form-group'>
         <h4>Send selected results via email</h4>
           {{ mailform.csrf_token }}

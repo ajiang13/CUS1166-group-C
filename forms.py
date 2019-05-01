@@ -69,9 +69,12 @@ class RestaurantForm(FlaskForm):
     categories = StringField('Categories')
 
 
-
 class MailForm(FlaskForm):
     recipients = StringField(
                 'Recipient(s)',
                 [validators.InputRequired()])
     body = StringField('Body')
+
+
+class RandomForm(FlaskForm):
+    random = "Can't decide? Generate a random restaurant!"

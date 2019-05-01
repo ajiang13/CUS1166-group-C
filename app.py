@@ -1,6 +1,6 @@
 # Imports
 from werkzeug.security import generate_password_hash, check_password_hash
-#import sqlite3
+import sqlite3
 import json
 import os
 
@@ -135,6 +135,7 @@ def search_results(advanced_search, form, page):
             mail.send(msg)
             return redirect('/sent')
 
+    #db.create_photo_id_dictionary(results)
     if not results:
         flash('No results found')
         return redirect('/search')
@@ -224,7 +225,7 @@ def search_results_filtered(page):
                 'search_results.html', filterform=filter, mailform=mailform,
                 results=sortedresults, result_count=result_count,
                 results_for_render=results_for_render, page=page,
-                per_page=per_page, pagination=pagination,  photo_dict = photo_dict)
+                per_page=per_page, pagination=pagination, photo_dict=photo_dict)
         elif request.form.get('sortbutton') == "Sort Descending":
             sortby = filter.data['select']
             sortedresults = db.sort_request(sortby, results, -1)
@@ -233,7 +234,7 @@ def search_results_filtered(page):
                 'search_results.html', filterform=filter, mailform=mailform,
                 results=sortedresults, result_count=result_count,
                 results_for_render=results_for_render, page=page,
-                per_page=per_page, pagination=pagination,  photo_dict = photo_dict)
+                per_page=per_page, pagination=pagination, photo_dict=photo_dict)
 
 
 # Display
@@ -256,7 +257,8 @@ def display_info():
             'display_info.html', displayform=display, results=displayedresults,
             result_count=result_count)
 
-#Add
+
+# Add
 @app.route("/new_restaurant", methods=['GET', 'POST'])
 def new_restaurant():
     add_restaurant = RestaurantForm()
@@ -277,15 +279,17 @@ def new_restaurant():
     flash("Restaurant successfully added!")
     return redirect('/new_restaurant')
 
+
 # Edit
 @app.route("/edit", methods=['GET', 'POST'])
 def edit():
     edit_restaurant = RestaurantForm()
-    if (edit_restaurant.data['name'] != '' or edit_restaurant.data['address']
-        != '' or edit_restaurant.data['city'] != ''
-            or edit_restaurant.data['state'] != ''
-                or edit_restaurant.data['zip_code'] != ''
-                    or edit_restaurant.data['categories'] != ''):
+    if (edit_restaurant.data['name'] != ''
+        or edit_restaurant.data['address'] != ''
+        or edit_restaurant.data['city'] != ''
+        or edit_restaurant.data['state'] != ''
+        or edit_restaurant.data['zip_code'] != ''
+            or edit_restaurant.data['categories'] != ''):
         e1 = edit_restaurant.data['name']
         e2 = edit_restaurant.data['address']
         e3 = edit_restaurant.data['city']
@@ -294,10 +298,9 @@ def edit():
         e6 = edit_restaurant.data['categories']
         db.edit_restaurant(e1, e2, e3, e4, e5, e6)
         return render_template('edit.html', form=edit_restaurant,
-                e1=e1, e2=e2, e3=e3, e4=e4, e5=e5, e6=e6)
+                               e1=e1, e2=e2, e3=e3, e4=e4, e5=e5, e6=e6)
     flash("The restaurant has been updated!")
     return redirect('/edit')
-
 
 
 @app.route('/login', methods=['GET', 'POST'])

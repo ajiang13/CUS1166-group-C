@@ -34,15 +34,14 @@ def advanced_search(q1, q2, q3, q4, q5):
     result_count = db.business.count(search_string)
     return results, result_count
 
+
 def add_restaurant(a1, a2, a3, a4, a5, a6):
     db.business.insert_one({"name": a1,  "address": a2, "city": a3, "state": a4, "zip_code": a5, "categories": a6})
+
 
 def edit_restaurant(e1, e2, e3, e4, e5, e6):
     db.business.update_one({}, {'$set': {"name": e1, "address": e2,
     "city": e3, "state": e4, "zip_code": e5, "categories": e6}}, upsert=False)
-
-
-
 
 
 # Funtions for sorting results
@@ -97,7 +96,7 @@ def sort_request(request, results, reverse):
 
 
 # Given results of a query,
-# will return a list of business_id strings and index keys
+# will return a dictionary of business_id strings and index keys
 def create_business_id_list(results):
     business_ids = []
     if results is not None:
@@ -107,6 +106,7 @@ def create_business_id_list(results):
         # Rewinds the cursor back to the first document
         results.rewind()
     return business_ids
+
 
 # Will query the pictures collection using the list of
 # business_ids, then return a dictionary of business_ids
