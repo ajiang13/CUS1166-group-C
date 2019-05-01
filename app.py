@@ -250,48 +250,48 @@ def display_info():
             'display_info.html', displayform=display, results=displayedresults,
             result_count=result_count)
 
-
+#Add
 @app.route("/new_restaurant", methods=['GET', 'POST'])
 def new_restaurant():
-    form = RestaurantForm()
-    if request.method == 'POST' and form.validate():
-        # save the restaurant
-        restaurant = Restaurant()
-        save_changes(restaurant, form, new=True)
-        flash('Restaurant created successfully!')
-        return redirect('/')
-    return render_template('new_restaurant.html', form=form)
-
-    def submit(restaurant, form, new=False):
-        restaurant = Restaurant()
-        restaurant.name = form.restaurant.data
-        restaurant.name = name
-        restaurant.city = form.city.data
-        restaurant.state = form.state.data
-        restaurant.is_open = form.is_open.data
-
-    if new:
-        db_session.add(restaurant)
-        db_session.commit()
-
+    add_restaurant = RestaurantForm()
+    if (add_restaurant.data['name'] != '' or add_restaurant.data['address']
+        != '' or add_restaurant.data['city'] != ''
+            or add_restaurant.data['state'] != ''
+                or add_restaurant.data['zip_code'] != ''
+                    or add_restaurant.data['categories'] != ''):
+        a1 = add_restaurant.data['name']
+        a2 = add_restaurant.data['address']
+        a3 = add_restaurant.data['city']
+        a4 = add_restaurant.data['state']
+        a5 = add_restaurant.data['zip_code']
+        a6 = add_restaurant.data['categories']
+        db.add_restaurant(a1, a2, a3, a4, a5, a6)
+        return render_template('new_restaurant.html', form=add_restaurant,
+                a1=a1, a2=a2, a3=a3, a4=a4, a5=a5, a6=a6)
+    flash("Restaurant successfully added!")
+    return redirect('/new_restaurant')
 
 # Edit
-@app.route("/item/<int:id>", methods=['GET', 'POST'])
-def edit(id):
+@app.route("/edit", methods=['GET', 'POST'])
+def edit():
+    edit_restaurant = RestaurantForm()
+    if (edit_restaurant.data['name'] != '' or edit_restaurant.data['address']
+        != '' or edit_restaurant.data['city'] != ''
+            or edit_restaurant.data['state'] != ''
+                or edit_restaurant.data['zip_code'] != ''
+                    or edit_restaurant.data['categories'] != ''):
+        e1 = edit_restaurant.data['name']
+        e2 = edit_restaurant.data['address']
+        e3 = edit_restaurant.data['city']
+        e4 = edit_restaurant.data['state']
+        e5 = edit_restaurant.data['zip_code']
+        e6 = edit_restaurant.data['categories']
+        db.edit_restaurant(e1, e2, e3, e4, e5, e6)
+        return render_template('edit.html', form=edit_restaurant,
+                e1=e1, e2=e2, e3=e3, e4=e4, e5=e5, e6=e6)
+    flash("The restaurant has been updated!")
+    return redirect('/edit')
 
-    qry = db.query(Restaurant).filter(Restaurant).id == id
-    restaurant = qry.first()
-
-    if restaurant:
-        form = RestaurantForm(formdata=request.form, obj=restaurant)
-        if request.method == 'POST' and form.validate():
-            # save edits
-            save_changes(restaurant, form)
-            flash('Restaurant updated successfully!')
-            return redirect('/')
-        return render_template('edit_restaurant.html', form=form)
-    else:
-        return 'Error loading #{id}'.format(id=id)
 
 
 @app.route('/login', methods=['GET', 'POST'])

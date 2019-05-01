@@ -31,23 +31,18 @@ def advanced_search(q1, q2, q3, q4, q5):
     if q5 is not None:
         search_string.update({'stars': {'$gte': q5}})
     results = db.business.find(search_string)
-    result_count = db.business.count_documents(search_string)
+    result_count = db.business.count(search_string)
     return results, result_count
 
+def add_restaurant(a1, a2, a3, a4, a5, a6):
+    db.business.insert_one({"name": a1,  "address": a2, "city": a3, "state": a4, "zip_code": a5, "categories": a6})
 
-def display_info(d1, d2, d3, d4):
-    display_string = {}
-    if d1 != '':
-        display_string.update({'$text': {'$search': d1}})
-    if d2 != '':
-        display_string.update({'hours': {'$regex': d2, '$options': 'i'}})
-    if d3 != '':
-        display_string.update({'latitude': {'$regex': d3, '$options': 'i'}})
-    if d4 != '':
-        display_string.update({'longitude': {'$regex': d4, '$options': 'i'}})
-    results = db.business.find(display_string)
-    result_count = db.business.display_documents(display_string)
-    return results, result_count
+def edit_restaurant(e1, e2, e3, e4, e5, e6):
+    db.business.update_one({}, {'$set': {"name": e1, "address": e2,
+    "city": e3, "state": e4, "zip_code": e5, "categories": e6}}, upsert=False)
+
+
+
 
 
 # Funtions for sorting results
