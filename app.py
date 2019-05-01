@@ -164,5 +164,12 @@ def register():
             return render_template('register.html', form=form)
     return render_template('register.html', error="There was an error registering this user")
 
+@app.route("/random", methods=['GET', 'POST'])
+def random():
+    if request.method == 'POST':
+        results = db.random_restaurant()
+    return render_template('search_results.html', results=random_results)
+
+
 if __name__ == "__main__":
     app.run(debug=True, host='127.0.0.1', port=5110)
