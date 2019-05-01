@@ -20,7 +20,7 @@
   <form action='' name='mail' value='mail' method='post' role='form'>
     <table class="table table-hover">
       <th><strong>Select</strong></th>
-      {# <th><strong>Thumbnail</strong></th> #}
+      <th><strong>Thumbnail</strong></th>
       <th><strong>Name</strong></th>
       <th><strong>Address</strong></th>
       <th><strong>City</strong></th>
@@ -31,11 +31,14 @@
       <th><strong>Categories</strong></th>
 
       {% for document in results %}
-      {# {{photo_id = photo_dict.get(document.business_id) #}
       <tr>
         <td><input type='checkbox' name='selected_documents'
         value='{"name": "{{ document.name }}", "address": "{{ document.address }}", "city": "{{ document.city }}", "state": "{{ document.state }}", "postal_code": "{{ document.postal_code }}", "stars": "{{ document.stars }}", "review_count": "{{ document.review_count }}", "categories": "{{ document.categories }}"}'></td>
-    {# <td>{%for business_id,photo_id in photo_results.items%}{{ photo_id }}{% endfor %}</td> #}
+      <td>{%if photo_dict[document.business_id] != Null%}
+        {#<<img src="s3.amazon.com/bucket//"{{ photo_dict[document.business_id] }}".jpg"" alt="">>#}
+        {{photo_dict[document.business_id]}}
+      {% endif %}
+      </td>
       <td>{{ document.name }}</td>
       <td>{{ document.address }}</td>
       <td>{{ document.city }}</td>
