@@ -12,7 +12,7 @@ db = client[MONGODB_NAME]
 print('Connecting to:')
 print(db)
 collection = db.business
-#collection2 = db.photo
+collection2 = db.photo
 # Create index on name field
 # Must create index to be able to search text
 db.business.create_index([('name', 'text')])
@@ -108,29 +108,19 @@ def create_business_id_list(results):
         results.rewind()
     return business_ids
 
-
 # Will query the pictures collection using the list of
 # business_ids, then return a dictionary of business_ids
 # and their photo_id values
 def create_photo_id_dictionary(results):
     photo_dict = {}
     business_ids = create_business_id_list(results)
-    # Queries the photos collection
     for business_id in business_ids:
-        photo = db.photos.find_one({'business_id': business_id})
-        print(business_id)
-        photo_id = photo['photo_id']
-        photo_dict.update({business_id: photo_id})
-
-    # photo_results = db.photo.find({'business_id': {'$in': business_ids}})
-    # if photo_results.count() > 0:
-    #     print("photo_results not empty")
-    # # Adding all key,value pairs to a dictionary
-    # # where business_id is a key and photo_id is the value
-    # for photo in photo_results:
-    #     business_id = photo['business_id']
-    #     photo_id = photo['photo_id']
-    #     photo_dict.update({business_id: photo_id})
-    print(photo_dict.values())
+        try:
+            # Queries the pictures collection
+            photo = db.photo.find_one({'business_id': business_id})
+            photo_id = photo['photo_id']
+            photo_dict[business_id] = photo_id
+        except:
+            pass
     results.rewind()
     return photo_dict

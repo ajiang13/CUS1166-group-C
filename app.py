@@ -1,6 +1,6 @@
 # Imports
 from werkzeug.security import generate_password_hash, check_password_hash
-import sqlite3
+#import sqlite3
 import json
 import os
 
@@ -18,7 +18,7 @@ from flask_s3 import FlaskS3
 import db
 
 # Create an instance of Flask class
-app = Flask(__name__, template_folder='templates')
+app = Flask(__name__, static_url_path = '/static', template_folder='templates')
 app.config.from_object(Config)
 bootstrap = Bootstrap(app)
 mail = Mail(app)
@@ -26,6 +26,11 @@ app.secret_key = "key"
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////Users/rsmal188/Documents/CUS1166-group-c-dev-small/database.db'
 db2 = SQLAlchemy(app)
 
+#S3 Setup
+s3 = FlaskS3()
+s3.init_app(app)
+app.config['FLASKS3_BUCKET_NAME'] = 'cus1166projectphotos'
+app.config['FLASKS3_BUCKET_DOMAIN'] = 'https://s3.console.aws.amazon.com/s3/buckets/cus1166projectphotos'
 
 class User(db2.Model):
     id = db2.Column(db2.Integer, primary_key=True)
@@ -33,12 +38,6 @@ class User(db2.Model):
     username = db2.Column(db2.String(120), unique=True, nullable=False)
     email = db2.Column(db2.String(60), unique=True, nullable=False)
     password = db2.Column(db2.String(60), nullable=False)
-
-#S3 Setup
-s3 = FlaskS3()
-s3.init_app(app)
-app.config['FLASKS3_BUCKET_NAME'] = 'cus1166projectphotos'
-
 
 # Routes
 @app.route("/")
@@ -63,10 +62,12 @@ def search_results(advanced_search, form, page):
     results = []
     filter = FilterForm()
     mailform = MailForm()
-    if (advanced_search.data['name'] != '' or advanced_search.data['city']
-        != '' or advanced_search.data['state'] != ''
+    if (advanced_search.data['name'] != ''
+        or advanced_search.data['city'] != ''
+        or advanced_search.data['state'] != ''
         or advanced_search.data['categories'] != ''
-            or advanced_search.data['stars'] != ''):
+        or advanced_search.data['stars'] != ''):
+
         q1 = advanced_search.data['name']
         q2 = advanced_search.data['city']
         q3 = advanced_search.data['state']
@@ -134,16 +135,16 @@ def search_results(advanced_search, form, page):
             mail.send(msg)
             return redirect('/sent')
 
-    #db.create_photo_id_dictionary(results)
     if not results:
         flash('No results found')
         return redirect('/search')
     else:
+        photo_dict = db.create_photo_id_dictionary(results)
         return render_template(
-            'search_results.html', form=form, filterform=filter,
+            'search_results.html', s3 = s3, form=form, filterform=filter,
             mailform=mailform, results=results, result_count=result_count,
             q1=q1, q2=q2, q3=q3, q4=q4, q5=q5, page=page, per_page=per_page,
-            pagination=pagination, results_for_render=results_for_render)
+            pagination=pagination, results_for_render=results_for_render, photo_dict = photo_dict)
 
 
 @app.route("/search_results_filtered/page/<int:page>", methods=['GET', 'POST'])
@@ -153,10 +154,12 @@ def search_results_filtered(page):
     results = []
     filter = FilterForm()
     mailform = MailForm()
-    if (session['adv_search_name'] != '' or session['adv_search_city'] != ''
+    if (session['adv_search_name'] != ''
+        or session['adv_search_city'] != ''
         or session['adv_search_state'] != ''
         or session['adv_search_categories'] != ''
-            or session['adv_search_stars'] != ''):
+        or session['adv_search_stars'] != ''):
+
         q1 = session['adv_search_name']
         q2 = session['adv_search_city']
         q3 = session['adv_search_state']
@@ -212,22 +215,25 @@ def search_results_filtered(page):
                       body=body)
             mail.send(msg)
             return redirect('/sent')
+
         if request.form.get('sortbutton') == "Sort Ascending":
             sortby = filter.data['select']
             sortedresults = db.sort_request(sortby, results, 1)
+            photo_dict = db.create_photo_id_dictionary(results)
             return render_template(
                 'search_results.html', filterform=filter, mailform=mailform,
                 results=sortedresults, result_count=result_count,
                 results_for_render=results_for_render, page=page,
-                per_page=per_page, pagination=pagination)
+                per_page=per_page, pagination=pagination,  photo_dict = photo_dict)
         elif request.form.get('sortbutton') == "Sort Descending":
             sortby = filter.data['select']
             sortedresults = db.sort_request(sortby, results, -1)
+            photo_dict = db.create_photo_id_dictionary(results)
             return render_template(
                 'search_results.html', filterform=filter, mailform=mailform,
                 results=sortedresults, result_count=result_count,
                 results_for_render=results_for_render, page=page,
-                per_page=per_page, pagination=pagination)
+                per_page=per_page, pagination=pagination,  photo_dict = photo_dict)
 
 
 # Display
