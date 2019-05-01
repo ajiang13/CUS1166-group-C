@@ -1,29 +1,69 @@
 {% extends 'layout.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
 {% block title %}Search results{% endblock %}
-{% block body %}
-    <h1>Results for '{{search_string}}'</h1>
-    <i>{{result_count}} result(s).</i>
-    <table>
-    <th><strong>Name</strong></th>
-    <th><strong>Address</strong></th>
-    <th><strong>City</strong></th>
-    <th><strong>State</strong></th>
-    <th><strong>Zip Code</strong></th>
-    <th><strong>Stars</strong></th>
-    <th><strong>Review Count</strong></th>
-    <th><strong>Categories</strong></th>
+{% block app_content %}
+    <h1>Search Results</h1>
+    {% if not random_result %}
+    {{ pagination.info }}
+    {{ pagination.links }}
+    {% endif %}
+  <form name='filter' value='filter' method='post' role='form' action='search_results_filtered'>
+    {{ filterform.csfr }}
+    <div style='width: 10%'>
+    <p>Sort by:</p>
+    {{ filterform.select(class_='form-control') }}
+    </div>
+    <div>
+       <button type='submit' class='btn btn-sm btn-success' name='sortbutton' value='Sort Ascending'>Sort Ascending</button>
+       <button type='submit' class='btn btn-sm btn-success' name='sortbutton' value='Sort Descending'>Sort Descending</button>
+    </div>
+  </form>
+  <form action='' name='mail' value='mail' method='post' role='form'>
+    <table class="table table-hover">
+      <th><strong>Select</strong></th>
+      {# <th><strong>Thumbnail</strong></th> #}
+      <th><strong>Name</strong></th>
+      <th><strong>Address</strong></th>
+      <th><strong>City</strong></th>
+      <th><strong>State/Province</strong></th>
+      <th><strong>Postcode</strong></th>
+      <th><strong>Stars</strong></th>
+      <th><strong>Review Count</strong></th>
+      <th><strong>Categories</strong></th>
 
       {% for document in results %}
+      {# {{photo_id = photo_dict.get(document.business_id) #}
       <tr>
-      <td>{{document.name}}</td>
-      <td>{{document.address}}</td>
-      <td>{{document.city}}</td>
-      <td>{{document.state}}</td>
-      <td>{{document.postal_code}}</td>
-      <td>{{document.stars}}</td>
-      <td>{{document.review_count}}</td>
-      <td>{{document.categories}}</td>
+        <td><input type='checkbox' name='selected_documents'
+        value='{"name": "{{ document.name }}", "address": "{{ document.address }}", "city": "{{ document.city }}", "state": "{{ document.state }}", "postal_code": "{{ document.postal_code }}", "stars": "{{ document.stars }}", "review_count": "{{ document.review_count }}", "categories": "{{ document.categories }}"}'></td>
+    {# <td>{%for business_id,photo_id in photo_results.items%}{{ photo_id }}{% endfor %}</td> #}
+      <td>{{ document.name }}</td>
+      <td>{{ document.address }}</td>
+      <td>{{ document.city }}</td>
+      <td>{{ document.state }}</td>
+      <td>{{ document.postal_code }}</td>
+      <td>{{ document.stars }}</td>
+      <td>{{ document.review_count }}</td>
+      <td>{{ document.categories }}</td>
       </tr>
       {% endfor %}
-      </table>
+    </table>
+    {% if not random_result %}
+      {{ pagination.links }}
+    {% endif %}
+      <div style='width: 30%' class='form-group'>
+        <h4>Send selected results via email</h4>
+          {{ mailform.csrf_token }}
+          <label for='recipients'>Recipients:</label>
+          <input type='text' class='form-control' id='recipients' name='recipients' placeholder='something@anything.com'>
+          {% for error in mailform.recipients.errors %}
+          <span style='color: red;'>[{{ error }}]</span>
+          {% endfor %}
+          <label for='body'>Body:</label>
+          <input type='text' class='form-control' id='body' name='body' placeholder=''>
+      </div>
+          <button type='submit' class='btn btn-sm btn-success' name='send_mail' value='send_mail'>Send email</button>
+    </form>
+
 {% endblock %}
