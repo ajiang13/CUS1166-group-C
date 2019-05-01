@@ -1,9 +1,18 @@
 import pymongo
+import os
 # Setup
-client = pymongo.MongoClient('localhost', 27017)
-db = client.yelp
+MONGO_URI = os.environ.get('MONGODB_URI')
+if not MONGO_URI:
+    MONGO_URI = 'mongodb://localhost:27017/yelp'
+client = pymongo.MongoClient(MONGO_URI)
+MONGODB_NAME = os.environ.get('MONGODB_NAME')
+if not MONGODB_NAME:
+    MONGODB_NAME = 'yelp'
+db = client[MONGODB_NAME]
+print('Connecting to:')
+print(db)
 collection = db.business
-collection2 = db.photos
+#collection2 = db.photo
 # Create index on name field
 # Must create index to be able to search text
 db.business.create_index([('name', 'text')])
@@ -43,35 +52,35 @@ def display_info(d1, d2, d3, d4):
 
 # Funtions for sorting results
 def sort_by_name(results, reverse):
-    if reverse is True:
+    if (reverse == True):
         return results.sort('name')
     else:
         return results.sort('name', -1)
 
 
 def sort_by_city(results, reverse):
-    if reverse is True:
+    if (reverse == True):
         return results.sort('city')
     else:
         return results.sort('city', -1)
 
 
 def sort_by_state(results, reverse):
-    if reverse is True:
+    if (reverse == True):
         return results.sort('state')
     else:
         return results.sort('state', -1)
 
 
 def sort_by_stars(results, reverse):
-    if reverse is True:
+    if (reverse == True):
         return results.sort('stars')
     else:
         return results.sort('stars', -1)
 
 
 def sort_by_review_count(results, reverse):
-    if reverse is True:
+    if (reverse == True):
         return results.sort('review_count')
     else:
         return results.sort('review_count', -1)
