@@ -8,13 +8,6 @@ collection2 = db.photos
 # Must create index to be able to search text
 db.business.create_index([('name', 'text')])
 
-db.business.insert({ 'name' : "text"}, { 'address' : "text"})
-
-
-#
-# [(name : "text")], [(address='text')], [(city= "text")],
-# [(state="text")], [(zip_code="text")], [(categories= "text")])
-
 
 def advanced_search(q1, q2, q3, q4, q5):
     search_string = {}
@@ -33,24 +26,11 @@ def advanced_search(q1, q2, q3, q4, q5):
     return results, result_count
 
 def add_restaurant(a1, a2, a3, a4, a5, a6):
-    add = {}
-    if a1 != '':
-        add.update({'$key': {'$add': a1}})
-    if a2 != '':
-        add.update({'$text': {'$regex': a2, '$options': 'i'}})
-    if a3 != '':
-        add.update({'city': {'$regex': a3, '$options': 'i'}})
-    if a4 != '':
-        add.update({'state': {'$regex': a4, '$options': 'i'}})
-    if a5 != '':
-        add.update({'zip_code': {'$regex': a5, '$options': 'i'}})
-    if a6 != '':
-        add.update({'categories': {'$regex': a6, '$options': 'i'}})
+    db.business.insert_one({"name": a1,  "address": a2, "city": a3, "state": a4, "zip_code": a5, "categories": a6})
 
-    results = db.business.insert(add)
-    return results
-
-
+def edit_restaurant(e1, e2, e3, e4, e5, e6):
+    db.business.update_one({query}, {'$set': {"name": e1, "address": e2,
+    "city": e3, "state": e4, "zip_code": e5, "categories": e6}}, upsert=False)
 
 
 

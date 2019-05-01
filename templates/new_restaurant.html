@@ -13,35 +13,30 @@
         {% endif %}
       {% endwith %}
       <br>
-        <form name='new_restaurant' value='new_restaurant' method='post' role='form'>
-          {{ restauarantform.csrf_token }}
-            <div class='form-group'>
-        <label for='name'>Name</label>
-        <input type="text" class='form-control' placeholder="" name="name" value="{{
-          request.form.name }}">
+      <form name='new_restaurant' value='new_restaurant' method='post' role='form'>
+        {{ form.csrf_token }}
+        <div class='form-group'>
+          <label for='name'>Name</label>
+          <input type='text' class='form-control' id='name' name='name' placeholder=''>
 
           <label for='address'>Address</label>
-          <input type="text" class='form-control' placeholder="" name="Address" value="{{
-            request.form.address}}">
+          <input type='text' class='form-control' id='address' name='address' placeholder=''>
 
-        <label for='city'>City</label>
-        <input type="text" class='form-control' placeholder="e.g. Queens" name="City" value="{{
-          request.form.city}}">
+          <label for='city'>City</label>
+          <input type='text' class='form-control' id='city' name='city' placeholder='e.g. Queens'>
 
-        <label for='state'>State</label>
-        <input type="text" class='form-control' placeholder="" name="State" value="{{
-            request.form.state }}">
+          <label for='state'>State</label>
+          <input type='text' class='form-control' id='state' name='state' placeholder='e.g. NY'>
 
-        <label for='zip_code'>Zip Code</label>
-        <input type="text" class='form-control' placeholder="" name="zip code"
-        value="{{ request.form.zip_code }}">
+          <label for='zip_code'>Zip Code</label>
+          <input type='float' class='form-control' id='zip_code' name='zip_code' placeholder=''>
 
-        <label for='categories'>Categories</label>
-        <input type="text" class='form-control' placeholder="e.g. Sushi, Meat, and Italian" name="categories"
-        value="{{ request.form.categories }}">
+          <label for='categories'>Categories</label>
+          <input type='float' class='form-control' id='categories' name='categories' placeholder='e.g. Italian, Fast Food'>
 
-        <input class="btn btn-sm btn-success" type="submit" value="Add">
-      </form>
+          <button type='submit' class='btn btn-sm btn-success'>Add</button>
+        </div>
+        </form>
         {% if error %}
        <p class="error"><strong>Error:</strong> {{ error }}
      {% endif %}

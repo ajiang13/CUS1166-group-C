@@ -1,18 +1,44 @@
 {% extends 'layout.html' %}
-{% import 'bootstrap/wtf.html' as wtf %}
-
-{% block title %}Edit restaurant{% endblock %}
+{% block title %}Add Restaurant{% endblock %}
 {% block app_content %}
-<h2>Edit Restaurant</h2>
+    <div class="container">
+      <h1>Replace a restaurant</h1>
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <ul class=flashes>
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+      <br>
+      <form name='edit_restaurant' value='edit_restaurant' method='post' role='form'>
+        {{ form.csrf_token }}
+        <div class='form-group'>
+          <label for='name'>Name</label>
+          <input type='text' class='form-control' id='name' name='name' placeholder=''>
 
-{% from "_formhelpers.html" import render_field %}
-<form method=post>
-    <dl>
-        {{ render_field(form.name) }}
-        {{ render_field(form.address) }}
-        {{ render_field(form.city) }}
-        {{ render_field(form.state) }}
-    </dl>
-    <p><input class="btn btn-default" type="submit" value="Edited">
-</form>
+          <label for='address'>Address</label>
+          <input type='text' class='form-control' id='address' name='address' placeholder=''>
+
+          <label for='city'>City</label>
+          <input type='text' class='form-control' id='city' name='city' placeholder='e.g. Queens'>
+
+          <label for='state'>State</label>
+          <input type='text' class='form-control' id='state' name='state' placeholder='e.g. NY'>
+
+          <label for='zip_code'>Zip Code</label>
+          <input type='float' class='form-control' id='zip_code' name='zip_code' placeholder=''>
+
+          <label for='categories'>Categories</label>
+          <input type='float' class='form-control' id='categories' name='categories' placeholder='e.g. Italian, Fast Food'>
+
+          <button type='submit' class='btn btn-sm btn-success'>Edit</button>
+        </div>
+        </form>
+        {% if error %}
+       <p class="error"><strong>Error:</strong> {{ error }}
+     {% endif %}
+    </div>
 {% endblock %}
