@@ -1,6 +1,6 @@
 # Imports
 from werkzeug.security import generate_password_hash, check_password_hash
-import sqlite3
+#import sqlite3
 import json
 import os
 
@@ -134,12 +134,10 @@ def search_results(advanced_search, form, page):
             mail.send(msg)
             return redirect('/sent')
 
-<<<<<<< HEAD
+
     # db.create_photo_id_dictionary(results)
 
-=======
     #db.create_photo_id_dictionary(results)
->>>>>>> origin/dev-jiang
     if not results:
         flash('No results found')
         return redirect('/search')
