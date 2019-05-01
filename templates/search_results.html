@@ -34,9 +34,12 @@
       <tr>
         <td><input type='checkbox' name='selected_documents'
         value='{"name": "{{ document.name }}", "address": "{{ document.address }}", "city": "{{ document.city }}", "state": "{{ document.state }}", "postal_code": "{{ document.postal_code }}", "stars": "{{ document.stars }}", "review_count": "{{ document.review_count }}", "categories": "{{ document.categories }}"}'></td>
-      <td>{%if photo_dict[document.business_id] != Null%}
-        {#<<img src="s3.amazon.com/bucket//"{{ photo_dict[document.business_id] }}".jpg"" alt="">>#}
-        {{photo_dict[document.business_id]}}
+      <td>
+      {%if photo_dict[document.business_id] != Null%}
+        {#<<img src="s3.amazon.com/bucket//"{{ photo_dict[document.business_id] }}.jpg" alt="">>#}
+        {#<img src="/static/photos/{{photo_dict[document.business_id]}}.jpg" alt="">#}
+        {#<img src="/static/photos/UFuRUHHsXZZSig0hA-UQ4w.jpg" alt="">#}
+        {{photo_dict[document.business_id]}}.jpg
       {% endif %}
       </td>
       <td>{{ document.name }}</td>
