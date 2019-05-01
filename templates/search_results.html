@@ -33,9 +33,9 @@
       {% for document in results %}
       {# {{photo_id = photo_dict.get(document.business_id) #}
       <tr>
-      <td><input type='checkbox' name='selected_documents'
-      value='{"name": "{{ document.name }}", "address": "{{ document.address }}", "city": "{{ document.city }}", "state": "{{ document.state }}", "postal_code": "{{ document.postal_code }}", "stars": "{{ document.stars }}", "review_count": "{{ document.review_count }}", "categories": "{{ document.categories }}"}'></td>
-      {# <td><<img src="photos/{{photo_id}}" alt="">></td> #}
+        <td><input type='checkbox' name='selected_documents'
+        value='{"name": "{{ document.name }}", "address": "{{ document.address }}", "city": "{{ document.city }}", "state": "{{ document.state }}", "postal_code": "{{ document.postal_code }}", "stars": "{{ document.stars }}", "review_count": "{{ document.review_count }}", "categories": "{{ document.categories }}"}'></td>
+    {# <td>{%for business_id,photo_id in photo_results.items%}{{ photo_id }}{% endfor %}</td> #}
       <td>{{ document.name }}</td>
       <td>{{ document.address }}</td>
       <td>{{ document.city }}</td>

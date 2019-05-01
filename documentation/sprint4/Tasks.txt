@@ -1,7 +1,0 @@
-Alan - ability to send restaurant info via email (FlaskMail).
-
-John - display thumbnails in search results and add view to display all photos for a restaurant.
-
-Matt - ability to add info to database.
-
-Raeven - complete implementation of user registration/login and add random restaurant selector ("I'm feeling lucky").

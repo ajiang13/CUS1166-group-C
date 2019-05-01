@@ -102,43 +102,40 @@ def sort_request(request, results, reverse):
 
 
 # Given results of a query,
-# will return a dictionary of business_id strings and index keys
+# will return a list of business_id strings and index keys
 def create_business_id_list(results):
     business_ids = []
     if results is not None:
         for document in results:
             business_id = document.get('business_id')
             business_ids.append(business_id)
+        # Rewinds the cursor back to the first document
+        results.rewind()
     return business_ids
 
 
-# Will query the pictures collection using the array of
+# Will query the pictures collection using the list of
 # business_ids, then return a dictionary of business_ids
 # and their photo_id values
 def create_photo_id_dictionary(results):
     photo_dict = {}
     business_ids = create_business_id_list(results)
     # Queries the photos collection
-    photo_results = db.photos.find({'business_id': {'$in': business_ids}})
-    # pymongo.errors.InvalidOperation: cannot set options after executing query
-
-    # Convert cursor into a list of dictionaries(or Documents)
-    photos = list(photo_results)
     for business_id in business_ids:
-        # photo = db.photos.find_one({'business_id': business_id})
-        # NoneType error
-        # photo_id = photo.get('photo_id')
-        # photo_dict[business_id] = photo_id
+        photo = db.photos.find_one({'business_id': business_id})
+        print(business_id)
+        photo_id = photo['photo_id']
+        photo_dict.update({business_id: photo_id})
 
-        # For each business_id, will check if photos list
-        # contains a document with the same business_id value
-        for photo in photos:
-            if photo.get('business_id') == business_id:
-                photo_dict[business_id] = photo.get('photo_id')
-
-        # Thumbnails should be pictures of the outside of a business
-        # if photo.get('label') == 'outside':
-        #    photo_dict[business_id] = photo_id.get('photo_id')
-        # else:
-        #    photo_dict[business_id] = photo_id.get('photo_id')
+    # photo_results = db.photo.find({'business_id': {'$in': business_ids}})
+    # if photo_results.count() > 0:
+    #     print("photo_results not empty")
+    # # Adding all key,value pairs to a dictionary
+    # # where business_id is a key and photo_id is the value
+    # for photo in photo_results:
+    #     business_id = photo['business_id']
+    #     photo_id = photo['photo_id']
+    #     photo_dict.update({business_id: photo_id})
+    print(photo_dict.values())
+    results.rewind()
     return photo_dict

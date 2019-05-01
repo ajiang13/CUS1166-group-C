@@ -14,6 +14,7 @@ from flask_paginate import Pagination, get_page_args
 from flask_sqlalchemy import SQLAlchemy
 from forms import (AdvancedSearchForm, FilterForm, RestaurantForm, MailForm,
                    DisplayForm, RegistrationForm)
+from flask_s3 import FlaskS3
 import db
 
 # Create an instance of Flask class
@@ -32,6 +33,11 @@ class User(db2.Model):
     username = db2.Column(db2.String(120), unique=True, nullable=False)
     email = db2.Column(db2.String(60), unique=True, nullable=False)
     password = db2.Column(db2.String(60), nullable=False)
+
+#S3 Setup
+s3 = FlaskS3()
+s3.init_app(app)
+app.config['FLASKS3_BUCKET_NAME'] = 'cus1166projectphotos'
 
 
 # Routes
@@ -127,6 +133,8 @@ def search_results(advanced_search, form, page):
                       body=body)
             mail.send(msg)
             return redirect('/sent')
+
+    db.create_photo_id_dictionary(results)
     if not results:
         flash('No results found')
         return redirect('/search')
@@ -215,7 +223,6 @@ def search_results_filtered(page):
         elif request.form.get('sortbutton') == "Sort Descending":
             sortby = filter.data['select']
             sortedresults = db.sort_request(sortby, results, -1)
-            #sortedresults = db.filter_by_stars(results, 3)
             return render_template(
                 'search_results.html', filterform=filter, mailform=mailform,
                 results=sortedresults, result_count=result_count,
