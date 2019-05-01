@@ -106,7 +106,8 @@ def search_results(advanced_search, form, page):
             #    print(document.name)
             return redirect('/sent')
 
-    db.create_photo_id_dictionary(results)
+    # db.create_photo_id_dictionary(results)
+
     if not results:
         flash('No results found')
         return redirect('/search')
@@ -171,7 +172,6 @@ def search_results_filtered(page):
     elif request.form.get('sortbutton') == 'Sort Descending':
         sortby = filter.data['select']
         sortedresults = db.sort_request(sortby, results, -1)
-        #sortedresults = db.filter_by_stars(results, 3)
         return render_template(
             'search_results.html', filterform=filter, mailform=mailform,
             results=sortedresults, result_count=result_count,
