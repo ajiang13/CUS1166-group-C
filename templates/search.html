@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 {% block title %}Search{% endblock %}
-{% block body %}
+{% block app_content %}
     <h1>Search</h1>
     {% with messages = get_flashed_messages() %}
       {% if messages %}
@@ -12,13 +12,28 @@
       {% endif %}
     {% endwith %}
 
-    {% from '_formhelpers.html' import render_field %}
-    <form method='post'>
-      <dl>
-        {{ render_field(form.select) }}
-        <p>
-        {{ render_field(form.search) }}
-      </dl>
-      <p><input type=submit value=Search>
-    </form>
+    <form name='advanced_search' value='advanced_search' method='post' role='form'>
+      {{ form.csrf_token }}
+      <div class='form-group'>
+        <label for='name'>Name</label>
+        <input type='text' class='form-control' id='name' name='name' placeholder=''>
+
+        <label for='city'>City</label>
+        <input type='text' class='form-control' id='city' name='city' placeholder=''>
+
+        <label for='state'>State Code</label>
+        <input type='text' class='form-control' id='state' name='state' placeholder='e.g. NY'>
+
+        <label for='Categories'>Categories</label>
+        <input type='text' class='form-control' id='categories' name='categories' placeholder='e.g. Italian'>
+
+        <label for='stars'>Rating</label>
+        <input type='float' class='form-control' id='stars' name='stars' placeholder='e.g. 4.5'>
+
+        <button type='submit' class='btn btn-sm btn-success'>Advanced Search</button>
+
+        <button type='submit' class='btn btn-sm btn-success'>Generate Random Restaurant!</button>
+      </div>
+      </form>
+
 {% endblock %}
