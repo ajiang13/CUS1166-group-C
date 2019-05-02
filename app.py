@@ -64,7 +64,11 @@ def search_results(advanced_search, form, page):
     results = []
     filter = FilterForm()
     mailform = MailForm()
-    if (request.form.get('advanced_search') == 'advanced_search'):
+    if (advanced_search.data['name'] != ''
+        or advanced_search.data['city'] != ''
+        or advanced_search.data['state'] != ''
+        or advanced_search.data['categories'] != ''
+            or advanced_search.data['stars'] != ''):
         q1 = advanced_search.data['name']
         q2 = advanced_search.data['city']
         q3 = advanced_search.data['state']
@@ -163,7 +167,7 @@ def search_results_filtered(page):
         or session['adv_search_city'] != ''
         or session['adv_search_state'] != ''
         or session['adv_search_categories'] != ''
-        or session['adv_search_stars'] != ''):
+            or session['adv_search_stars'] != ''):
 
         q1 = session['adv_search_name']
         q2 = session['adv_search_city']
