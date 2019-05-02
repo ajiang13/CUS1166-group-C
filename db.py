@@ -124,7 +124,7 @@ def create_photo_id_dictionary(results):
             photo_dict[business_id] = photo_id
         except:
             pass
-    results.rewind()
+    #results.rewind()
     return photo_dict
 
 
